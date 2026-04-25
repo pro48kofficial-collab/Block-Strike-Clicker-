@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Block Strike Clicker FULL</title>
+<title>Block Strike Clicker</title>
 
 <style>
 body{
@@ -18,12 +18,13 @@ text-align:center;
 #loading{
 position:fixed;
 inset:0;
-background:black;
+background:#000;
 display:flex;
 align-items:center;
 justify-content:center;
 font-size:26px;
 z-index:999;
+flex-direction:column;
 }
 
 /* TOP */
@@ -47,11 +48,10 @@ color:white;
 cursor:pointer;
 }
 
-/* BOTTOM MENU (НОРМАЛЬНІ КНОПКИ) */
+/* NAV */
 .nav{
 position:fixed;
 bottom:0;
-left:0;
 width:100%;
 display:flex;
 overflow-x:auto;
@@ -61,6 +61,14 @@ background:#111827;
 .nav button{
 flex:0 0 auto;
 min-width:90px;
+}
+
+/* INVENTORY */
+.card{
+border:1px solid #333;
+margin:5px;
+padding:5px;
+border-radius:10px;
 }
 </style>
 </head>
@@ -97,12 +105,30 @@ min-width:90px;
 <div id="cases" class="page">
 <h2>📦 Cases</h2>
 
-<button onclick="openCase('Pro',1000)">Pro Case</button>
-<button onclick="openCase('Sand',500)">Sand Case</button>
-<button onclick="openCase('Jlister',700)">Jlister</button>
-<button onclick="openCase('Reapel',900)">Reapel</button>
+<button onclick="openCase('Marshmall',300)">
+📦🌸 Marshmall — 💰300
+</button>
 
-<button onclick="openSticker()">Sticker (500 coins)</button>
+<button onclick="openCase('Sand',500)">
+🏜️ Sand — 💰500
+</button>
+
+<button onclick="openCase('Jlister',700)">
+☣️ Jlister — 💰700
+</button>
+
+<button onclick="openCase('Reapel',900)">
+💀 Reapel — 💰900
+</button>
+
+<button onclick="openCase('Pro',1000)">
+🔥 Pro — 💰1000
+</button>
+
+<button onclick="openSticker()">
+🏷️ Sticker — 💰500 coins
+</button>
+
 </div>
 
 <!-- WHEEL -->
@@ -148,7 +174,7 @@ min-width:90px;
 
 </div>
 
-<!-- NAV BUTTONS (ТОЛЬКИ КНОПКИ, ВСЕ ЗБЕРЕЖЕНО) -->
+<!-- NAV -->
 <div class="nav">
 <button onclick="show('click')">Click</button>
 <button onclick="show('shop')">Shop</button>
@@ -161,7 +187,7 @@ min-width:90px;
 
 <script>
 
-/* DATA (ВСЕ ЗБЕРЕЖЕНО) */
+/* DATA */
 let coins=0;
 let gold=0;
 let upgradeCost=100;
@@ -175,17 +201,20 @@ let avatar="🔫";
 
 /* CASES */
 const cases={
-Pro:["AK Pro","M4 Elite","AWP Star"],
-Sand:["AK Sand","AWP Desert"],
-Jlister:["AK Toxic","AWP Virus"],
-Reapel:["AK Reaper","Knife Death"]
+Marshmall:["AK Marsh","Glock Candy","Knife Pink"],
+Sand:["AK Sand","AWP Desert","M4 Dust"],
+Jlister:["AK Toxic","AWP Virus","Deagle Acid"],
+Reapel:["AK Reaper","Knife Death","AWP Ghost"],
+Pro:["AK Pro","M4 Elite","AWP Star"]
 };
 
-/* LOADING */
+/* LOADING FIX */
+window.onload=()=>{
 setTimeout(()=>{
 document.getElementById("loading").style.display="none";
 update();
 },1200);
+};
 
 /* NAV */
 function show(p){
@@ -223,7 +252,11 @@ update();
 function openCase(type,price){
 if(gold<price)return;
 gold-=price;
-inventory.push(cases[type][Math.floor(Math.random()*cases[type].length)]);
+
+let item = cases[type][Math.floor(Math.random()*cases[type].length)];
+inventory.push(item);
+
+alert("🎁 " + item);
 update();
 }
 
@@ -246,11 +279,26 @@ gold-=50000;
 
 let r=Math.random()*100;
 
-if(r<1)inventory.push("Bayonet BS");
-else if(r<5)gold+=200000;
-else if(r<10)inventory.push("AK Legend");
-else if(r<30)gold+=600;
-else gold+=100;
+if(r<1){
+inventory.push("Bayonet BS");
+wheelResult.innerText="SECRET DROP!";
+}
+else if(r<5){
+gold+=200000;
+wheelResult.innerText="200K GOLD";
+}
+else if(r<10){
+inventory.push("AK Legend");
+wheelResult.innerText="AK LEGEND";
+}
+else if(r<30){
+gold+=600;
+wheelResult.innerText="600 GOLD";
+}
+else{
+gold+=100;
+wheelResult.innerText="100 GOLD";
+}
 
 update();
 }
@@ -259,17 +307,22 @@ update();
 function useCode(){
 let v=document.getElementById("codeInput").value;
 
-if(usedCodes.includes(v))return;
+if(usedCodes.includes(v)){
+promoMsg.innerText="Already used";
+return;
+}
 
 if(v==="Galactic"){
 inventory.push("Karambit Galactic");
 usedCodes.push(v);
+promoMsg.innerText="GALACTIC!";
 update();
 return;
 }
 
 gold+=100;
 usedCodes.push(v);
+promoMsg.innerText="+100 GOLD";
 update();
 }
 
@@ -293,9 +346,20 @@ update();
 function renderInv(){
 let html="";
 inventory.forEach((i,x)=>{
-html+=`<div>${i}</div>`;
+html+=`
+<div class="card">
+${i}
+<button onclick="sell(${x})">Sell</button>
+</div>`;
 });
 document.getElementById("inventory").innerHTML=html;
+}
+
+/* SELL */
+function sell(i){
+inventory.splice(i,1);
+gold+=100;
+update();
 }
 
 /* UPDATE */
@@ -342,6 +406,9 @@ const coinsEl=document.getElementById("coins");
 const goldEl=document.getElementById("gold");
 const nameEl=document.getElementById("name");
 const avatarEl=document.getElementById("avatar");
+
+const promoMsg=document.getElementById("promoMsg");
+const wheelResult=document.getElementById("wheelResult");
 
 </script>
 

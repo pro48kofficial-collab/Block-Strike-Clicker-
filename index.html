@@ -1,1 +1,110 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Block Strike Clicker</title>
 
+<style>
+body{
+    margin:0;
+    font-family:Arial;
+    background:#0b0f1a;
+    color:white;
+    text-align:center;
+}
+
+#game{
+    padding:20px;
+}
+
+h1{
+    color:#00eaff;
+}
+
+#gold{
+    font-size:24px;
+    margin:10px;
+}
+
+#character{
+    width:200px;
+    cursor:pointer;
+    transition:0.1s;
+}
+
+#character:active{
+    transform:scale(0.9);
+}
+
+button{
+    padding:10px 20px;
+    margin:5px;
+    border:none;
+    background:#00eaff;
+    color:black;
+    cursor:pointer;
+    font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<div id="game">
+    <h1>Block Strike Clicker</h1>
+
+    <div id="gold">Gold: 0</div>
+
+    <!-- ВБУДОВАНИЙ ПЕРСОНАЖ -->
+    <img id="character" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAAE...REPLACE_ME...">
+
+    <div>
+        <button onclick="buyUpgrade()">+1 Gold / Click (50)</button>
+        <button onclick="resetGame()">Скинути прогрес</button>
+    </div>
+</div>
+
+<script>
+let gold = 0;
+let perClick = 1;
+
+if(localStorage.getItem("gold")){
+    gold = parseInt(localStorage.getItem("gold"));
+    perClick = parseInt(localStorage.getItem("perClick"));
+}
+
+function update(){
+    document.getElementById("gold").innerText = "Gold: " + gold;
+    localStorage.setItem("gold", gold);
+    localStorage.setItem("perClick", perClick);
+}
+
+document.getElementById("character").onclick = function(){
+    gold += perClick;
+    update();
+}
+
+function buyUpgrade(){
+    if(gold >= 50){
+        gold -= 50;
+        perClick++;
+        update();
+    } else {
+        alert("Не вистачає голди!");
+    }
+}
+
+function resetGame(){
+    if(confirm("Точно скинути прогрес?")){
+        gold = 0;
+        perClick = 1;
+        update();
+    }
+}
+
+update();
+</script>
+
+</body>
+      </html>

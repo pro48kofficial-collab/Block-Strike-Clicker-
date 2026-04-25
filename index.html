@@ -2,65 +2,135 @@
 <html lang="uk">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Block Strike Clicker</title>
 
 <style>
 body{
+  margin:0;
   font-family: Arial;
   background:#0b1220;
   color:white;
   text-align:center;
 }
 
-button{padding:10px; margin:5px; cursor:pointer}
+/* TOP */
+.top{
+  padding:10px;
+  font-size:20px;
+}
 
+/* PAGE */
+.page{display:none; padding:10px;}
+.active{display:block;}
+
+/* BUTTONS */
+button{
+  padding:10px;
+  margin:5px;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+/* BOTTOM NAV */
+.nav{
+  position:fixed;
+  bottom:0;
+  width:100%;
+  display:flex;
+  background:#111827;
+}
+
+.nav button{
+  flex:1;
+  border:none;
+  background:#1f2937;
+  color:white;
+  font-size:14px;
+}
+.nav button:hover{
+  background:#374151;
+}
+
+/* INVENTORY CARD */
 .card{
   border:1px solid #333;
-  margin:10px;
-  padding:10px;
+  margin:5px;
+  padding:5px;
+  border-radius:10px;
 }
 </style>
 </head>
 
 <body>
 
-<h1>💰 Coins: <span id="coins">0</span></h1>
+<div class="top">
+💰 Coins: <span id="coins">0</span> | 🔥 Power: <span id="power">1</span>
+</div>
 
-<hr>
+<!-- CLICK PAGE -->
+<div id="click" class="page active">
+  <h2>🔫 Click</h2>
+  <img src="image.png" width="160" onclick="clickGun()" style="cursor:pointer">
+  <br><br>
+  <button onclick="upgrade()">Upgrade (50💰)</button>
+</div>
 
-<h2>🔫 Зброя</h2>
-<img src="image.png" width="150" onclick="clickGun()" style="cursor:pointer">
+<!-- SHOP -->
+<div id="shop" class="page">
+  <h2>🏪 Магазин</h2>
 
-<p>Power: <span id="power">1</span></p>
+  <button onclick="buy('AK-47',100)">AK-47 - 100</button>
+  <button onclick="buy('M4A1',150)">M4A1 - 150</button>
+  <button onclick="buy('AWP',300)">AWP - 300</button>
+  <button onclick="buy('Deagle',80)">Deagle - 80</button>
+  <button onclick="buy('Glock',50)">Glock - 50</button>
+  <button onclick="buy('Knife',40)">Knife - 40</button>
+  <button onclick="buy('P90',120)">P90 - 120</button>
+  <button onclick="buy('Shotgun',200)">Shotgun - 200</button>
+</div>
 
-<button onclick="upgrade()">Upgrade (50💰)</button>
+<!-- CASES -->
+<div id="cases" class="page">
+  <h2>📦 Кейси</h2>
 
-<hr>
+  <button onclick="openCase('Marshmall')">Marshmall</button>
+  <button onclick="openCase('Sand of Time')">Sand of Time</button>
+  <button onclick="openCase('Jlister')">Jlister</button>
+  <button onclick="openCase('Past Reapel')">Past Reapel</button>
 
-<h2>🛒 Магазин</h2>
-<button onclick="buy('AK-47', 100)">AK-47 - 100💰</button>
-<button onclick="buy('Knife', 50)">Knife - 50💰</button>
-<button onclick="buy('Sniper', 300)">Sniper - 300💰</button>
+  <p id="caseResult"></p>
+</div>
 
-<hr>
+<!-- INVENTORY -->
+<div id="inv" class="page">
+  <h2>🎒 Інвентар</h2>
+  <div id="inventory"></div>
+</div>
 
-<h2>📦 Кейси</h2>
-<button onclick="openCase('Marshmall')">Marshmall</button>
-<button onclick="openCase('Sand of Time')">Sand of Time</button>
-<button onclick="openCase('Jlister')">Jlister</button>
-<button onclick="openCase('Past Reapel')">Past Reapel</button>
-
-<hr>
-
-<h2>🎒 Інвентар</h2>
-<div id="inventory"></div>
+<!-- NAV -->
+<div class="nav">
+  <button onclick="show('click')">Click</button>
+  <button onclick="show('shop')">Shop</button>
+  <button onclick="show('cases')">Cases</button>
+  <button onclick="show('inv')">Inventory</button>
+</div>
 
 <script>
+
 let coins = 0;
 let power = 1;
 let inventory = [];
 
-// load
+/* CASES + SKINS */
+const cases = {
+  "Marshmall": ["AK-47 Marsh", "Knife Marsh", "M4 Marsh"],
+  "Sand of Time": ["AWP Sand", "Deagle Sand", "AK Sand"],
+  "Jlister": ["Glock J", "P90 J", "M4 J"],
+  "Past Reapel": ["Reaper AK", "Ghost Knife", "Dark AWP"]
+};
+
+/* LOAD */
 if(localStorage.getItem("save")){
   let data = JSON.parse(localStorage.getItem("save"));
   coins = data.coins;
@@ -69,13 +139,13 @@ if(localStorage.getItem("save")){
   update();
 }
 
-// клік
+/* CLICK */
 function clickGun(){
   coins += power;
   update();
 }
 
-// апгрейд
+/* UPGRADE */
 function upgrade(){
   if(coins >= 50){
     coins -= 50;
@@ -84,7 +154,7 @@ function upgrade(){
   }
 }
 
-// магазин
+/* SHOP */
 function buy(name, price){
   if(coins >= price){
     coins -= price;
@@ -93,49 +163,48 @@ function buy(name, price){
   }
 }
 
-// кейси
-const cases = {
-  "Marshmall": ["AK-47 M", "Knife M", "Rare Gun M"],
-  "Sand of Time": ["AK-47 S", "Desert Eagle S", "Golden Knife"],
-  "Jlister": ["J-Pistol", "J-Rifle", "J-Sniper"],
-  "Past Reapel": ["Ghost AK", "Reaper Knife", "Dark Sniper"]
-}
-
+/* CASES */
 function openCase(type){
   let items = cases[type];
   let item = items[Math.floor(Math.random()*items.length)];
   inventory.push(item);
+
+  document.getElementById("caseResult").innerText = "🎉 You got: " + item;
+
   update();
 }
 
-// продаж
-function sell(index){
-  coins += 20;
-  inventory.splice(index,1);
+/* SELL */
+function sell(i){
+  coins += 25;
+  inventory.splice(i,1);
   update();
 }
 
-// оновлення
+/* INVENTORY */
+function renderInv(){
+  let html = "";
+  inventory.forEach((item,i)=>{
+    html += `
+      <div class="card">
+        ${item}
+        <button onclick="sell(${i})">Sell 25💰</button>
+      </div>
+    `;
+  });
+  document.getElementById("inventory").innerHTML = html;
+}
+
+/* UPDATE */
 function update(){
   document.getElementById("coins").innerText = coins;
   document.getElementById("power").innerText = power;
 
-  let inv = "";
-  inventory.forEach((item, i)=>{
-    inv += `
-      <div class="card">
-        ${item}
-        <button onclick="sell(${i})">💰 Sell (20)</button>
-      </div>
-    `;
-  });
-
-  document.getElementById("inventory").innerHTML = inv;
-
+  renderInv();
   save();
 }
 
-// збереження
+/* SAVE */
 function save(){
   localStorage.setItem("save", JSON.stringify({
     coins,
@@ -143,7 +212,14 @@ function save(){
     inventory
   }));
 }
+
+/* NAV */
+function show(page){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.getElementById(page).classList.add("active");
+}
+
 </script>
 
 </body>
-    </html>
+  </html>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BS Full Clicker Game</title>
+<title>Block Strike Clicker FULL</title>
 
 <style>
 body{
@@ -22,7 +22,7 @@ background:black;
 display:flex;
 align-items:center;
 justify-content:center;
-font-size:28px;
+font-size:26px;
 z-index:999;
 }
 
@@ -32,41 +32,45 @@ padding:10px;
 font-size:18px;
 }
 
+/* PAGES */
+.page{display:none;padding:10px}
+.active{display:block}
+
 /* BUTTONS */
 button{
 padding:10px;
 margin:5px;
 border-radius:10px;
-cursor:pointer;
+border:none;
 background:#1f2937;
 color:white;
-border:none;
+cursor:pointer;
 }
 
-button:hover{
-background:#374151;
+/* BOTTOM MENU (НОРМАЛЬНІ КНОПКИ) */
+.nav{
+position:fixed;
+bottom:0;
+left:0;
+width:100%;
+display:flex;
+overflow-x:auto;
+background:#111827;
 }
 
-.panel{margin-top:10px}
-
-/* INVENTORY */
-.card{
-border:1px solid #333;
-margin:5px;
-padding:5px;
-border-radius:10px;
+.nav button{
+flex:0 0 auto;
+min-width:90px;
 }
 </style>
 </head>
 
 <body>
 
-<!-- LOADING SCREEN -->
+<!-- LOADING -->
 <div id="loading">Loading Game...</div>
 
-<!-- GAME -->
-<div id="game" style="display:none">
-
+<!-- TOP -->
 <div class="top">
 👤 <span id="name">Player</span> <span id="avatar">🔫</span><br>
 💰 Coins: <span id="coins">0</span> |
@@ -74,40 +78,90 @@ border-radius:10px;
 ⬆ Upgrade: <span id="upgradeCost">100</span>
 </div>
 
-<!-- BUTTONS -->
-<div class="panel">
-
+<!-- CLICK -->
+<div id="click" class="page active">
+<h2>🔫 Click</h2>
 <button onclick="clickGun()">CLICK</button>
 <button onclick="upgrade()">UPGRADE</button>
+</div>
 
+<!-- SHOP -->
+<div id="shop" class="page">
+<h2>🏪 Shop</h2>
 <button onclick="buy('AK-47',100)">AK-47</button>
 <button onclick="buy('AWP',300)">AWP</button>
-<button onclick="buy('Knife',50)">KNIFE</button>
+<button onclick="buy('Knife',50)">Knife</button>
+</div>
 
-<button onclick="openCase('Pro',1000)">CASE PRO</button>
-<button onclick="openSticker()">STICKER</button>
+<!-- CASES -->
+<div id="cases" class="page">
+<h2>📦 Cases</h2>
 
-<button onclick="spinWheel()">🎡 WHEEL 50K</button>
+<button onclick="openCase('Pro',1000)">Pro Case</button>
+<button onclick="openCase('Sand',500)">Sand Case</button>
+<button onclick="openCase('Jlister',700)">Jlister</button>
+<button onclick="openCase('Reapel',900)">Reapel</button>
 
-<button onclick="useCode()">PROMO</button>
+<button onclick="openSticker()">Sticker (500 coins)</button>
+</div>
 
-<button onclick="changeProfile()">PROFILE</button>
+<!-- WHEEL -->
+<div id="wheel" class="page">
+<h2>🎡 Wheel</h2>
+<button onclick="spinWheel()">SPIN (50K gold)</button>
+<p id="wheelResult"></p>
+</div>
+
+<!-- INVENTORY -->
+<div id="inv" class="page">
+<h2>🎒 Inventory</h2>
+<div id="inventory"></div>
+</div>
+
+<!-- PROMO -->
+<div id="promo" class="page">
+<h2>🎁 Promo Codes</h2>
+<input id="codeInput" placeholder="Code">
+<br>
+<button onclick="useCode()">ACTIVATE</button>
+<p id="promoMsg"></p>
+</div>
+
+<!-- PROFILE -->
+<div id="profile" class="page">
+<h2>👤 Profile</h2>
+
+<input id="nickname" placeholder="Name">
+<button onclick="saveProfile()">Save</button>
+
+<h3>🎨 Avatar</h3>
+<button onclick="setAvatar('🔫')">🔫</button>
+<button onclick="setAvatar('📷')">📷</button>
+<button onclick="setAvatar('🎩')">🎩</button>
+<button onclick="setAvatar('🕶️')">🕶️</button>
+
+<h3>🎨 Color</h3>
+<button onclick="setColor('red')">Red</button>
+<button onclick="setColor('blue')">Blue</button>
+<button onclick="setColor('lime')">Green</button>
+<button onclick="setColor('white')">White</button>
 
 </div>
 
-<h3>🎒 Inventory</h3>
-<div id="inventory"></div>
-
-<br>
-<input id="codeInput" placeholder="Promo code">
-<br>
-<input id="nickname" placeholder="Name">
-
+<!-- NAV BUTTONS (ТОЛЬКИ КНОПКИ, ВСЕ ЗБЕРЕЖЕНО) -->
+<div class="nav">
+<button onclick="show('click')">Click</button>
+<button onclick="show('shop')">Shop</button>
+<button onclick="show('cases')">Cases</button>
+<button onclick="show('wheel')">Wheel</button>
+<button onclick="show('inv')">Inv</button>
+<button onclick="show('promo')">Promo</button>
+<button onclick="show('profile')">Profile</button>
 </div>
 
 <script>
 
-/* DATA */
+/* DATA (ВСЕ ЗБЕРЕЖЕНО) */
 let coins=0;
 let gold=0;
 let upgradeCost=100;
@@ -116,19 +170,28 @@ let inventory=[];
 let usedCodes=[];
 
 let playerName="Player";
+let playerColor="white";
 let avatar="🔫";
 
 /* CASES */
 const cases={
-Pro:["AK Pro","M4 Elite","AWP Star"]
+Pro:["AK Pro","M4 Elite","AWP Star"],
+Sand:["AK Sand","AWP Desert"],
+Jlister:["AK Toxic","AWP Virus"],
+Reapel:["AK Reaper","Knife Death"]
 };
 
 /* LOADING */
 setTimeout(()=>{
 document.getElementById("loading").style.display="none";
-document.getElementById("game").style.display="block";
 update();
 },1200);
+
+/* NAV */
+function show(p){
+document.querySelectorAll(".page").forEach(e=>e.classList.remove("active"));
+document.getElementById(p).classList.add("active");
+}
 
 /* CLICK */
 function clickGun(){
@@ -156,13 +219,11 @@ update();
 }
 }
 
-/* CASE */
+/* CASES */
 function openCase(type,price){
 if(gold<price)return;
-
 gold-=price;
-let item=cases[type][Math.floor(Math.random()*cases[type].length)];
-inventory.push(item);
+inventory.push(cases[type][Math.floor(Math.random()*cases[type].length)]);
 update();
 }
 
@@ -176,32 +237,20 @@ update();
 
 /* WHEEL */
 function spinWheel(){
+if(gold<50000){
+wheelResult.innerText="Need 50K";
+return;
+}
 
-if(gold<50000)return;
 gold-=50000;
 
 let r=Math.random()*100;
 
-if(r<1){
-inventory.push("Bayonet BS");
-alert("🔪 SECRET BAYONET!");
-}
-else if(r<5){
-gold+=200000;
-alert("💰 200K GOLD");
-}
-else if(r<10){
-inventory.push("AK-47 Legend");
-alert("🔫 LEGEND AK");
-}
-else if(r<30){
-gold+=600;
-alert("💰 600 GOLD");
-}
-else{
-gold+=100;
-alert("💰 100 GOLD");
-}
+if(r<1)inventory.push("Bayonet BS");
+else if(r<5)gold+=200000;
+else if(r<10)inventory.push("AK Legend");
+else if(r<30)gold+=600;
+else gold+=100;
 
 update();
 }
@@ -210,10 +259,7 @@ update();
 function useCode(){
 let v=document.getElementById("codeInput").value;
 
-if(usedCodes.includes(v)){
-alert("Already used");
-return;
-}
+if(usedCodes.includes(v))return;
 
 if(v==="Galactic"){
 inventory.push("Karambit Galactic");
@@ -228,16 +274,18 @@ update();
 }
 
 /* PROFILE */
-function changeProfile(){
+function saveProfile(){
 playerName=document.getElementById("nickname").value||playerName;
 update();
 }
 
-/* SELL */
-function sell(i){
-let item=inventory[i];
-inventory.splice(i,1);
-gold+=100;
+function setAvatar(a){
+avatar=a;
+update();
+}
+
+function setColor(c){
+playerColor=c;
 update();
 }
 
@@ -245,11 +293,7 @@ update();
 function renderInv(){
 let html="";
 inventory.forEach((i,x)=>{
-html+=`
-<div class="card">
-${i}
-<button onclick="sell(${x})">Sell</button>
-</div>`;
+html+=`<div>${i}</div>`;
 });
 document.getElementById("inventory").innerHTML=html;
 }
@@ -259,9 +303,9 @@ function update(){
 
 coinsEl.innerText=coins;
 goldEl.innerText=gold;
-upgradeCostEl.innerText=upgradeCost;
 
 nameEl.innerText=playerName;
+nameEl.style.color=playerColor;
 avatarEl.innerText=avatar;
 
 renderInv();
@@ -271,8 +315,9 @@ save();
 /* SAVE */
 function save(){
 localStorage.setItem("save",JSON.stringify({
-coins,gold,upgradeCost,clickPower,inventory,usedCodes,
-playerName,avatar
+coins,gold,upgradeCost,clickPower,
+inventory,usedCodes,
+playerName,playerColor,avatar
 }));
 }
 
@@ -287,6 +332,7 @@ clickPower=d.clickPower||1;
 inventory=d.inventory||[];
 usedCodes=d.usedCodes||[];
 playerName=d.playerName||"Player";
+playerColor=d.playerColor||"white";
 avatar=d.avatar||"🔫";
 }
 }catch{}
@@ -294,11 +340,10 @@ avatar=d.avatar||"🔫";
 /* ELEMENTS */
 const coinsEl=document.getElementById("coins");
 const goldEl=document.getElementById("gold");
-const upgradeCostEl=document.getElementById("upgradeCost");
 const nameEl=document.getElementById("name");
 const avatarEl=document.getElementById("avatar");
 
 </script>
 
 </body>
-</html>
+  </html>

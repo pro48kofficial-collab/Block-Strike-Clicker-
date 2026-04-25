@@ -87,11 +87,12 @@ button{
 <h2>📦 Кейси</h2>
 
 <div style="display:flex; overflow-x:auto; gap:10px; padding:10px;">
-  <button onclick="openCase('Marshmall')">Marshmall (200)</button>
-  <button onclick="openCase('Sand of Time')">Sand (400)</button>
-  <button onclick="openCase('Jlister')">Jlister (600)</button>
-  <button onclick="openCase('Past Reapel')">Reapel (800)</button>
-  <button onclick="openCase('Pro')">🔥 Pro (1000)</button>
+  <button onclick="openCase('Marshmall')">Marsh 200</button>
+  <button onclick="openCase('Sand of Time')">Sand 400</button>
+  <button onclick="openCase('Jlister')">Jlister 600</button>
+  <button onclick="openCase('Past Reapel')">Reapel 800</button>
+  <button onclick="openCase('Pro')">Pro 1000</button>
+  <button onclick="openCase('Sticker')">Sticker 500</button>
 </div>
 
 <p id="caseResult"></p>
@@ -135,22 +136,24 @@ let usedCodes = [];
 
 /* CASES */
 const cases = {
-  "Marshmall": ["AK Marsh", "Knife Marsh", "M4 Marsh"],
-  "Sand of Time": ["AWP Sand", "Deagle Sand", "AK Sand"],
-  "Jlister": ["Glock J", "P90 J", "M4 J"],
-  "Past Reapel": ["Reaper AK", "Ghost Knife", "Dark AWP"],
-  "Pro": ["Sticker Dragon Pro", "Sticker Neon Pro", "Sticker Gold Pro"]
+"Marshmall": ["AK Marsh (Common)", "Knife Marsh (Rare)", "M4 Marsh (Epic)"],
+"Sand of Time": ["AWP Sand (Rare)", "Deagle Sand (Epic)", "AK Sand (Legendary)"],
+"Jlister": ["Glock J (Common)", "P90 J (Rare)", "M4 J (Epic)"],
+"Past Reapel": ["Reaper AK (Epic)", "Ghost Knife (Legendary)", "Dark AWP (Mythic)"],
+"Pro": ["Sticker Dragon Pro (Legendary)", "Sticker Neon Pro (Mythic)", "Sticker Gold Pro (Mythic+)"],
+"Sticker": ["Sticker Skull (Common)", "Sticker Flame (Rare)", "Sticker Neon (Epic)", "Sticker Gold Beast (Legendary)"]
 };
 
 const casePrices = {
-  "Marshmall": 200,
-  "Sand of Time": 400,
-  "Jlister": 600,
-  "Past Reapel": 800,
-  "Pro": 1000
+"Marshmall": 200,
+"Sand of Time": 400,
+"Jlister": 600,
+"Past Reapel": 800,
+"Pro": 1000,
+"Sticker": 500
 };
 
-/* PROMO CODES */
+/* PROMO */
 const codes = [
 "Block Strike","Pro48k","PositIv4IkBS","Update","Gold",
 "Marsh","Holiday's","Top","Sand","2025","2026","2027 year",
@@ -159,134 +162,136 @@ const codes = [
 
 /* LOAD */
 if(localStorage.getItem("save")){
-  let data = JSON.parse(localStorage.getItem("save"));
+let data = JSON.parse(localStorage.getItem("save"));
 
-  coins = data.coins || 0;
-  gold = data.gold || 0;
-  power = data.power || 1;
-  inventory = data.inventory || [];
-  usedCodes = data.usedCodes || [];
-  upgradeCost = data.upgradeCost || 100;
+coins = data.coins || 0;
+gold = data.gold || 0;
+power = data.power || 1;
+inventory = data.inventory || [];
+usedCodes = data.usedCodes || [];
+upgradeCost = data.upgradeCost || 100;
 
-  update();
+update();
 }
 
-/* CLICK */
+/* CLICK (+1 +1) */
 function clickGun(){
-  coins += power;
-  update();
+coins += 1;
+gold += 1;
+update();
 }
 
-/* UPGRADE (дорожчає на +100 Gold) */
+/* UPGRADE */
 function upgrade(){
-  if(gold >= upgradeCost){
-    gold -= upgradeCost;
-    power++;
-    upgradeCost += 100;
-    update();
-  }
+if(gold >= upgradeCost){
+gold -= upgradeCost;
+power++;
+upgradeCost += 100;
+update();
+}
 }
 
 /* SHOP */
 function buy(name, price){
-  if(coins >= price){
-    coins -= price;
-    inventory.push(name);
-    update();
-  }
+if(coins >= price){
+coins -= price;
+inventory.push(name);
+update();
+}
 }
 
 /* CASES */
 function openCase(type){
 
-  let price = casePrices[type];
+let price = casePrices[type];
 
-  if(gold < price){
-    alert("Not enough Gold!");
-    return;
-  }
+let currency = (type === "Sticker") ? "coins" : "gold";
 
-  gold -= price;
+if(currency === "coins"){
+if(coins < price){ alert("Not enough Coins!"); return; }
+coins -= price;
+} else {
+if(gold < price){ alert("Not enough Gold!"); return; }
+gold -= price;
+}
 
-  let items = cases[type];
-  let item = items[Math.floor(Math.random()*items.length)];
+let items = cases[type];
+let item = items[Math.floor(Math.random()*items.length)];
 
-  inventory.push(item);
+inventory.push(item);
 
-  document.getElementById("caseResult").innerText = "🎉 You got: " + item;
+document.getElementById("caseResult").innerText = "🎉 " + item;
 
-  update();
+update();
 }
 
 /* SELL */
 function sell(i){
-  coins += 25;
-  inventory.splice(i,1);
-  update();
+coins += 25;
+inventory.splice(i,1);
+update();
 }
 
 /* INVENTORY */
 function renderInv(){
-  let html = "";
+let html = "";
 
-  inventory.forEach((item,i)=>{
-    html += `
-      <div class="card">
-        ${item}
-        <button onclick="sell(${i})">Sell 25💰</button>
-      </div>
-    `;
-  });
+inventory.forEach((item,i)=>{
+html += `
+<div class="card">
+${item}
+<button onclick="sell(${i})">Sell 25💰</button>
+</div>`;
+});
 
-  document.getElementById("inventory").innerHTML = html;
+document.getElementById("inventory").innerHTML = html;
 }
 
 /* PROMO */
 function useCode(){
-  let val = document.getElementById("codeInput").value;
+let val = document.getElementById("codeInput").value;
 
-  if(usedCodes.includes(val)){
-    document.getElementById("promoMsg").innerText = "Already used!";
-    return;
-  }
+if(usedCodes.includes(val)){
+document.getElementById("promoMsg").innerText = "Already used!";
+return;
+}
 
-  if(codes.includes(val)){
-    gold += 100;
-    usedCodes.push(val);
-    document.getElementById("promoMsg").innerText = "+100 Gold!";
-    update();
-  } else {
-    document.getElementById("promoMsg").innerText = "Invalid code";
-  }
+if(codes.includes(val)){
+gold += 100;
+usedCodes.push(val);
+document.getElementById("promoMsg").innerText = "+100 Gold!";
+update();
+} else {
+document.getElementById("promoMsg").innerText = "Invalid code";
+}
 }
 
 /* UPDATE */
 function update(){
+document.getElementById("coins").innerText = coins;
+document.getElementById("gold").innerText = gold;
+document.getElementById("power").innerText = power;
 
-  document.getElementById("coins").innerText = coins;
-  document.getElementById("gold").innerText = gold;
-  document.getElementById("power").innerText = power;
-
-  renderInv();
-  save();
+renderInv();
+save();
 }
 
 /* SAVE */
 function save(){
-  localStorage.setItem("save", JSON.stringify({
-    coins,
-    gold,
-    power,
-    inventory,
-    usedCodes,
-    upgradeCost
-  }));
+localStorage.setItem("save", JSON.stringify({
+coins,
+gold,
+power,
+inventory,
+usedCodes,
+upgradeCost
+}));
 }
 
 /* NAV */
 function show(page){
-  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
-  document.getElementById(page).classList.add("active");
+document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+document.getElementById(page).classList.add("active");
 }
 
 </script>

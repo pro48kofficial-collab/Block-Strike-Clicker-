@@ -3,131 +3,106 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BS Full Game</title>
+<title>BS Full Clicker Game</title>
 
 <style>
-body{margin:0;font-family:Arial;background:#0b1220;color:white;text-align:center}
+body{
+margin:0;
+font-family:Arial;
+background:#0b1220;
+color:white;
+text-align:center;
+}
 
+/* LOADING */
 #loading{
-position:fixed;inset:0;background:black;
-display:flex;align-items:center;justify-content:center;
-font-size:28px;z-index:999;
+position:fixed;
+inset:0;
+background:black;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:28px;
+z-index:999;
 }
 
-.page{display:none;padding:10px}
-.active{display:block}
-
-button{padding:10px;margin:5px;border-radius:10px}
-
-.nav{
-position:fixed;bottom:0;width:100%;
-display:flex;overflow-x:auto;background:#111827;
+/* TOP */
+.top{
+padding:10px;
+font-size:18px;
 }
 
-.nav button{
-min-width:85px;background:#1f2937;color:white;border:none;
+/* BUTTONS */
+button{
+padding:10px;
+margin:5px;
+border-radius:10px;
+cursor:pointer;
+background:#1f2937;
+color:white;
+border:none;
 }
 
+button:hover{
+background:#374151;
+}
+
+.panel{margin-top:10px}
+
+/* INVENTORY */
 .card{
-border:1px solid #333;margin:5px;padding:5px;border-radius:10px;
+border:1px solid #333;
+margin:5px;
+padding:5px;
+border-radius:10px;
 }
 </style>
 </head>
 
 <body>
 
-<div id="loading">Loading...</div>
+<!-- LOADING SCREEN -->
+<div id="loading">Loading Game...</div>
 
-<!-- TOP -->
-<div>
+<!-- GAME -->
+<div id="game" style="display:none">
+
+<div class="top">
+👤 <span id="name">Player</span> <span id="avatar">🔫</span><br>
 💰 Coins: <span id="coins">0</span> |
 🟡 Gold: <span id="gold">0</span> |
 ⬆ Upgrade: <span id="upgradeCost">100</span>
 </div>
 
-<!-- CLICK -->
-<div id="click" class="page active">
-<h2>🔫 Click</h2>
-<img src="image.png" width="140" onclick="clickGun()">
-<br>
-<button onclick="upgrade()">Upgrade (+1 → +2 gold/click)</button>
+<!-- BUTTONS -->
+<div class="panel">
+
+<button onclick="clickGun()">CLICK</button>
+<button onclick="upgrade()">UPGRADE</button>
+
+<button onclick="buy('AK-47',100)">AK-47</button>
+<button onclick="buy('AWP',300)">AWP</button>
+<button onclick="buy('Knife',50)">KNIFE</button>
+
+<button onclick="openCase('Pro',1000)">CASE PRO</button>
+<button onclick="openSticker()">STICKER</button>
+
+<button onclick="spinWheel()">🎡 WHEEL 50K</button>
+
+<button onclick="useCode()">PROMO</button>
+
+<button onclick="changeProfile()">PROFILE</button>
+
 </div>
 
-<!-- SHOP -->
-<div id="shop" class="page">
-<h2>🏪 Магазин</h2>
-
-<button onclick="buy('AK-47',100)">AK-47 - 100 coins</button>
-<button onclick="buy('M4A1',150)">M4A1 - 150 coins</button>
-<button onclick="buy('AWP',300)">AWP - 300 coins</button>
-<button onclick="buy('Knife',50)">Knife - 50 coins</button>
-</div>
-
-<!-- CASES -->
-<div id="cases" class="page">
-<h2>📦 Кейси</h2>
-
-<button onclick="openCase('Marshmall',300)">🍬 Marshmall - 300 gold</button>
-<button onclick="openCase('Sand',500)">🏜 Sand - 500 gold</button>
-<button onclick="openCase('Jlister',700)">🧪 Jlister - 700 gold</button>
-<button onclick="openCase('Reapel',900)">💀 Reapel - 900 gold</button>
-<button onclick="openCase('Pro',1000)">🔥 Pro - 1000 gold</button>
-
-<button onclick="openSticker()">📜 Sticker - 500 coins</button>
-</div>
-
-<!-- WHEEL -->
-<div id="wheel" class="page">
-<h2>🎡 Колесо фортуни</h2>
-<button onclick="spinWheel()">SPIN</button>
-<p id="wheelResult"></p>
-</div>
-
-<!-- INVENTORY -->
-<div id="inv" class="page">
-<h2>🎒 Інвентар</h2>
+<h3>🎒 Inventory</h3>
 <div id="inventory"></div>
-</div>
 
-<!-- PROMO -->
-<div id="promo" class="page">
-<h2>🎁 Промокоди</h2>
-
-<input id="codeInput" placeholder="Code">
 <br>
-<button onclick="useCode()">Activate</button>
-
-<p id="promoMsg"></p>
-</div>
-
-<!-- PROFILE -->
-<div id="profile" class="page">
-<h2>👤 Профіль</h2>
-
+<input id="codeInput" placeholder="Promo code">
+<br>
 <input id="nickname" placeholder="Name">
-<button onclick="saveProfile()">Save</button>
 
-<h3>🎨 Avatar</h3>
-<button onclick="setAvatar('🔫')">🔫</button>
-<button onclick="setAvatar('📷')">📷</button>
-<button onclick="setAvatar('🎩')">🎩</button>
-
-<h3>📊 Stats</h3>
-<p>Coins: <span id="statCoins"></span></p>
-<p>Gold: <span id="statGold"></span></p>
-<p>Items: <span id="statItems"></span></p>
-<p>Time: <span id="timePlayed"></span>s</p>
-</div>
-
-<!-- NAV -->
-<div class="nav">
-<button onclick="show('click')">Click</button>
-<button onclick="show('shop')">Shop</button>
-<button onclick="show('cases')">Cases</button>
-<button onclick="show('wheel')">Wheel</button>
-<button onclick="show('inv')">Inv</button>
-<button onclick="show('promo')">Promo</button>
-<button onclick="show('profile')">Profile</button>
 </div>
 
 <script>
@@ -138,30 +113,22 @@ let gold=0;
 let upgradeCost=100;
 let clickPower=1;
 let inventory=[];
-let time=0;
 let usedCodes=[];
 
-let avatar="🔫";
 let playerName="Player";
+let avatar="🔫";
 
 /* CASES */
 const cases={
-Marshmall:["AK Marsh","Glock Sweet","Knife Candy"],
-Sand:["AWP Sand","AK Desert","M4 Dust"],
-Jlister:["AK Toxic","AWP Virus","Deagle Acid"],
-Reapel:["AK Reaper","Knife Death","AWP Ghost"],
 Pro:["AK Pro","M4 Elite","AWP Star"]
 };
 
-/* PROMOS */
-const codes=[
-"Block Strike","Pro48k","PositIv4IkBS","Update","Gold",
-"Marsh","Holiday's","Top","Sand","2025","2026","2027 year",
-"BRDAY","Happy year"
-];
-
-/* TIMER */
-setInterval(()=>{time++;update()},1000);
+/* LOADING */
+setTimeout(()=>{
+document.getElementById("loading").style.display="none";
+document.getElementById("game").style.display="block";
+update();
+},1200);
 
 /* CLICK */
 function clickGun(){
@@ -181,15 +148,15 @@ update();
 }
 
 /* SHOP */
-function buy(name,price){
+function buy(item,price){
 if(coins>=price){
 coins-=price;
-inventory.push(name);
+inventory.push(item);
 update();
 }
 }
 
-/* CASES */
+/* CASE */
 function openCase(type,price){
 if(gold<price)return;
 
@@ -209,50 +176,34 @@ update();
 
 /* WHEEL */
 function spinWheel(){
+
+if(gold<50000)return;
+gold-=50000;
+
 let r=Math.random()*100;
-let result="";
 
 if(r<1){
-result="🔪 Bayonet BS";
 inventory.push("Bayonet BS");
+alert("🔪 SECRET BAYONET!");
 }
-else if(r<6){
-result="💰 200000 Gold";
+else if(r<5){
 gold+=200000;
+alert("💰 200K GOLD");
 }
 else if(r<10){
-result="🔫 AK-47 Legenda";
-inventory.push("AK-47 Legenda");
+inventory.push("AK-47 Legend");
+alert("🔫 LEGEND AK");
 }
 else if(r<30){
-result="💰 600 Gold";
 gold+=600;
+alert("💰 600 GOLD");
 }
 else{
-result="💰 100 Gold";
 gold+=100;
+alert("💰 100 GOLD");
 }
 
-wheelResult.innerText=result;
 update();
-}
-
-/* SELL */
-function sell(i){
-let item=inventory[i];
-if(item.includes("Bayonet")) gold+=200000;
-else gold+=100;
-inventory.splice(i,1);
-update();
-}
-
-/* INVENTORY */
-function renderInv(){
-let html="";
-inventory.forEach((i,x)=>{
-html+=`<div class="card">${i}<button onclick="sell(${x})">Sell</button></div>`;
-});
-document.getElementById("inventory").innerHTML=html;
 }
 
 /* PROMO */
@@ -260,37 +211,47 @@ function useCode(){
 let v=document.getElementById("codeInput").value;
 
 if(usedCodes.includes(v)){
-promoMsg.innerText="Used";
+alert("Already used");
 return;
 }
 
 if(v==="Galactic"){
 inventory.push("Karambit Galactic");
 usedCodes.push(v);
-promoMsg.innerText="🔥 Galactic!";
 update();
 return;
 }
 
-if(codes.includes(v)){
 gold+=100;
 usedCodes.push(v);
-promoMsg.innerText="+100 Gold";
 update();
-}else{
-promoMsg.innerText="Wrong code";
-}
 }
 
 /* PROFILE */
-function saveProfile(){
+function changeProfile(){
 playerName=document.getElementById("nickname").value||playerName;
 update();
 }
 
-function setAvatar(a){
-avatar=a;
+/* SELL */
+function sell(i){
+let item=inventory[i];
+inventory.splice(i,1);
+gold+=100;
 update();
+}
+
+/* INVENTORY */
+function renderInv(){
+let html="";
+inventory.forEach((i,x)=>{
+html+=`
+<div class="card">
+${i}
+<button onclick="sell(${x})">Sell</button>
+</div>`;
+});
+document.getElementById("inventory").innerHTML=html;
 }
 
 /* UPDATE */
@@ -298,11 +259,10 @@ function update(){
 
 coinsEl.innerText=coins;
 goldEl.innerText=gold;
+upgradeCostEl.innerText=upgradeCost;
 
-statCoins.innerText=coins;
-statGold.innerText=gold;
-statItems.innerText=inventory.length;
-timePlayed.innerText=time;
+nameEl.innerText=playerName;
+avatarEl.innerText=avatar;
 
 renderInv();
 save();
@@ -311,7 +271,8 @@ save();
 /* SAVE */
 function save(){
 localStorage.setItem("save",JSON.stringify({
-coins,gold,upgradeCost,clickPower,inventory,time,usedCodes,playerName,avatar
+coins,gold,upgradeCost,clickPower,inventory,usedCodes,
+playerName,avatar
 }));
 }
 
@@ -324,37 +285,20 @@ gold=d.gold||0;
 upgradeCost=d.upgradeCost||100;
 clickPower=d.clickPower||1;
 inventory=d.inventory||[];
-time=d.time||0;
 usedCodes=d.usedCodes||[];
 playerName=d.playerName||"Player";
 avatar=d.avatar||"🔫";
 }
 }catch{}
 
-/* NAV */
-function show(p){
-document.querySelectorAll(".page").forEach(e=>e.classList.remove("active"));
-document.getElementById(p).classList.add("active");
-}
-
 /* ELEMENTS */
 const coinsEl=document.getElementById("coins");
 const goldEl=document.getElementById("gold");
-
-const statCoins=document.getElementById("statCoins");
-const statGold=document.getElementById("statGold");
-const statItems=document.getElementById("statItems");
-const timePlayed=document.getElementById("timePlayed");
-const wheelResult=document.getElementById("wheelResult");
-const promoMsg=document.getElementById("promoMsg");
-
-/* LOADING */
-setTimeout(()=>{
-document.getElementById("loading").style.display="none";
-update();
-},1000);
+const upgradeCostEl=document.getElementById("upgradeCost");
+const nameEl=document.getElementById("name");
+const avatarEl=document.getElementById("avatar");
 
 </script>
 
 </body>
-  </html>
+</html>

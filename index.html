@@ -6,93 +6,82 @@
 <title>Block Strike Clicker</title>
 
 <style>
-body{
-  margin:0;
-  font-family: Arial;
-  background:#0b1220;
-  color:white;
-  text-align:center;
+body{margin:0;font-family:Arial;background:#0b1220;color:white;text-align:center}
+
+/* LOADING */
+#loading{
+position:fixed;
+width:100%;
+height:100%;
+background:black;
+display:flex;
+justify-content:center;
+align-items:center;
+font-size:30px;
+z-index:999;
 }
 
-.top{
-  padding:10px;
-  font-size:18px;
-}
+/* UI */
+.top{padding:10px}
+.page{display:none;padding:10px}
+.active{display:block}
 
-.page{display:none; padding:10px;}
-.active{display:block;}
-
-button{
-  padding:10px;
-  margin:5px;
-  border-radius:10px;
-  cursor:pointer;
-}
+button{padding:10px;margin:5px;border-radius:10px;cursor:pointer}
 
 .nav{
-  position:fixed;
-  bottom:0;
-  width:100%;
-  display:flex;
-  background:#111827;
+position:fixed;
+bottom:0;
+width:100%;
+display:flex;
+background:#111827;
 }
-
-.nav button{
-  flex:1;
-  border:none;
-  background:#1f2937;
-  color:white;
-  padding:10px;
-}
+.nav button{flex:1;background:#1f2937;color:white;border:none}
 
 .card{
-  border:1px solid #333;
-  margin:5px;
-  padding:5px;
-  border-radius:10px;
+border:1px solid #333;
+margin:5px;
+padding:5px;
+border-radius:10px;
 }
 </style>
 </head>
 
 <body>
 
+<div id="loading">Loading...</div>
+
 <div class="top">
-💰 Coins: <span id="coins">0</span> | 🟡 Gold: <span id="gold">0</span> | 🔥 Power: <span id="power">1</span>
+<span id="name" style="color:white">Player</span> <span id="avatar">🔫</span><br>
+💰 <span id="coins">0</span> | 🟡 <span id="gold">0</span> | 🔥 <span id="power">1</span>
 </div>
 
 <!-- CLICK -->
 <div id="click" class="page active">
-  <h2>🔫 Click</h2>
-  <img src="image.png" width="160" onclick="clickGun()" style="cursor:pointer">
-  <br><br>
-  <button onclick="upgrade()">🔼 Upgrade (100 Gold)</button>
+<h2>🔫 Click</h2>
+<img src="image.png" width="150" onclick="clickGun()">
+<br>
+<button onclick="upgrade()">Upgrade (<span id="upgradeCost">100</span> Gold)</button>
 </div>
 
 <!-- SHOP -->
 <div id="shop" class="page">
 <h2>🏪 Магазин</h2>
-
-<button onclick="buy('AK-47',100)">AK-47 - 100</button>
-<button onclick="buy('M4A1',150)">M4A1 - 150</button>
-<button onclick="buy('AWP',300)">AWP - 300</button>
-<button onclick="buy('Deagle',80)">Deagle - 80</button>
-<button onclick="buy('Glock',50)">Glock - 50</button>
-<button onclick="buy('Knife',40)">Knife - 40</button>
-<button onclick="buy('P90',120)">P90 - 120</button>
-<button onclick="buy('Shotgun',200)">Shotgun - 200</button>
+<button onclick="buy('AK-47',100)">AK-47</button>
+<button onclick="buy('AWP',300)">AWP</button>
+<button onclick="buy('Knife',50)">Knife</button>
 </div>
 
 <!-- CASES -->
 <div id="cases" class="page">
 <h2>📦 Кейси</h2>
 
-<div style="display:flex; overflow-x:auto; gap:10px; padding:10px;">
-  <button onclick="openCase('Marshmall')">Marsh 200</button>
-  <button onclick="openCase('Sand of Time')">Sand 400</button>
-  <button onclick="openCase('Jlister')">Jlister 600</button>
-  <button onclick="openCase('Past Reapel')">Reapel 800</button>
-  <button onclick="openCase('Pro')">Pro 1000</button>
-  <button onclick="openCase('Sticker')">Sticker 500</button>
+<div style="display:flex;overflow-x:auto;">
+<button onclick="openCase('Marshmall')">200</button>
+<button onclick="openCase('Sand')">400</button>
+<button onclick="openCase('Jlister')">600</button>
+<button onclick="openCase('Reapel')">800</button>
+<button onclick="openCase('Pro')">1000</button>
+<button onclick="openCase('Sticker')">500 coins</button>
 </div>
 
 <p id="caseResult"></p>
@@ -107,12 +96,39 @@ button{
 <!-- PROMO -->
 <div id="promo" class="page">
 <h2>🎁 Промокоди</h2>
-
-<input id="codeInput" placeholder="Enter code">
-<br><br>
-<button onclick="useCode()">Activate</button>
-
+<input id="codeInput">
+<button onclick="useCode()">OK</button>
 <p id="promoMsg"></p>
+</div>
+
+<!-- PROFILE -->
+<div id="profile" class="page">
+<h2>👤 Профіль</h2>
+
+<input id="nickname" placeholder="Name">
+<input id="color" placeholder="Color (red, blue...)">
+<button onclick="saveProfile()">Save</button>
+
+<h3>Аватар</h3>
+<div>
+<button onclick="setAvatar('🔫')">🔫</button>
+<button onclick="setAvatar('📷')">📷</button>
+<button onclick="setAvatar('🎩')">🎩</button>
+<button onclick="setAvatar('📺')">📺</button>
+<button onclick="setAvatar('🎥')">🎥</button>
+<button onclick="setAvatar('🧸')">🧸</button>
+<button onclick="setAvatar('🕶️')">🕶️</button>
+</div>
+
+<h3>📊 Статистика</h3>
+<p>Coins earned: <span id="statCoins"></span></p>
+<p>Coins spent: <span id="statCoinsSpent"></span></p>
+<p>Gold earned: <span id="statGold"></span></p>
+<p>Gold spent: <span id="statGoldSpent"></span></p>
+<p>Skins earned: <span id="statSkins"></span></p>
+<p>Inventory: <span id="statInv"></span></p>
+
+<button onclick="reset()">Reset Progress</button>
 </div>
 
 <!-- NAV -->
@@ -120,157 +136,166 @@ button{
 <button onclick="show('click')">Click</button>
 <button onclick="show('shop')">Shop</button>
 <button onclick="show('cases')">Cases</button>
-<button onclick="show('inv')">Inventory</button>
+<button onclick="show('inv')">Inv</button>
 <button onclick="show('promo')">Promo</button>
+<button onclick="show('profile')">Profile</button>
 </div>
 
 <script>
 
-let coins = 0;
-let gold = 0;
-let power = 1;
-let upgradeCost = 100;
+let coins=0,gold=0,power=1,upgradeCost=100;
+let inventory=[],usedCodes=[];
 
-let inventory = [];
-let usedCodes = [];
+let stats={
+coinsEarned:0,
+coinsSpent:0,
+goldEarned:0,
+goldSpent:0,
+skins:0
+};
+
+let name="Player",color="white",avatar="🔫";
 
 /* CASES */
-const cases = {
-"Marshmall": ["AK Marsh (Common)", "Knife Marsh (Rare)", "M4 Marsh (Epic)"],
-"Sand of Time": ["AWP Sand (Rare)", "Deagle Sand (Epic)", "AK Sand (Legendary)"],
-"Jlister": ["Glock J (Common)", "P90 J (Rare)", "M4 J (Epic)"],
-"Past Reapel": ["Reaper AK (Epic)", "Ghost Knife (Legendary)", "Dark AWP (Mythic)"],
-"Pro": ["Sticker Dragon Pro (Legendary)", "Sticker Neon Pro (Mythic)", "Sticker Gold Pro (Mythic+)"],
-"Sticker": ["Sticker Skull (Common)", "Sticker Flame (Rare)", "Sticker Neon (Epic)", "Sticker Gold Beast (Legendary)"]
+const cases={
+Marshmall:["Common","Rare"],
+Sand:["Rare","Epic"],
+Jlister:["Epic"],
+Reapel:["Legendary"],
+Pro:["Mythic"],
+Sticker:["Sticker"]
 };
 
-const casePrices = {
-"Marshmall": 200,
-"Sand of Time": 400,
-"Jlister": 600,
-"Past Reapel": 800,
-"Pro": 1000,
-"Sticker": 500
+const prices={
+Marshmall:200,Sand:400,Jlister:600,Reapel:800,Pro:1000,Sticker:500
 };
-
-/* PROMO */
-const codes = [
-"Block Strike","Pro48k","PositIv4IkBS","Update","Gold",
-"Marsh","Holiday's","Top","Sand","2025","2026","2027 year",
-"BRDAY","Happy year"
-];
 
 /* LOAD */
-if(localStorage.getItem("save")){
-let data = JSON.parse(localStorage.getItem("save"));
-
-coins = data.coins || 0;
-gold = data.gold || 0;
-power = data.power || 1;
-inventory = data.inventory || [];
-usedCodes = data.usedCodes || [];
-upgradeCost = data.upgradeCost || 100;
-
+if(localStorage.save){
+let d=JSON.parse(localStorage.save);
+Object.assign(window,d);
 update();
 }
 
-/* CLICK (+1 +1) */
+/* LOADING */
+setTimeout(()=>{document.getElementById("loading").style.display="none"},1500);
+
+/* CLICK */
 function clickGun(){
-coins += 1;
-gold += 1;
+coins+=1;
+gold+=1;
+stats.coinsEarned++;
+stats.goldEarned++;
 update();
 }
 
 /* UPGRADE */
 function upgrade(){
-if(gold >= upgradeCost){
-gold -= upgradeCost;
+if(gold>=upgradeCost){
+gold-=upgradeCost;
+stats.goldSpent+=upgradeCost;
 power++;
-upgradeCost += 100;
+upgradeCost+=100;
 update();
 }
 }
 
-/* SHOP */
-function buy(name, price){
-if(coins >= price){
-coins -= price;
-inventory.push(name);
+/* BUY */
+function buy(n,p){
+if(coins>=p){
+coins-=p;
+stats.coinsSpent+=p;
+inventory.push(n);
+stats.skins++;
 update();
 }
 }
 
-/* CASES */
-function openCase(type){
+/* CASE */
+function openCase(t){
+let p=prices[t];
 
-let price = casePrices[type];
-
-let currency = (type === "Sticker") ? "coins" : "gold";
-
-if(currency === "coins"){
-if(coins < price){ alert("Not enough Coins!"); return; }
-coins -= price;
-} else {
-if(gold < price){ alert("Not enough Gold!"); return; }
-gold -= price;
+if(t==="Sticker"){
+if(coins<p)return alert("No coins");
+coins-=p;
+stats.coinsSpent+=p;
+}else{
+if(gold<p)return alert("No gold");
+gold-=p;
+stats.goldSpent+=p;
 }
 
-let items = cases[type];
-let item = items[Math.floor(Math.random()*items.length)];
+let arr=cases[t];
+let item=arr[Math.floor(Math.random()*arr.length)];
 
 inventory.push(item);
+stats.skins++;
 
-document.getElementById("caseResult").innerText = "🎉 " + item;
+document.getElementById("caseResult").innerText=item;
 
-update();
-}
-
-/* SELL */
-function sell(i){
-coins += 25;
-inventory.splice(i,1);
 update();
 }
 
 /* INVENTORY */
 function renderInv(){
-let html = "";
-
-inventory.forEach((item,i)=>{
-html += `
-<div class="card">
-${item}
-<button onclick="sell(${i})">Sell 25💰</button>
-</div>`;
+let html="";
+inventory.forEach((i,x)=>{
+html+=`<div class="card">${i}<button onclick="sell(${x})">Sell</button></div>`;
 });
+inventory.innerHTML=html;
+}
 
-document.getElementById("inventory").innerHTML = html;
+/* SELL */
+function sell(i){
+coins+=25;
+inventory.splice(i,1);
+update();
 }
 
 /* PROMO */
 function useCode(){
-let val = document.getElementById("codeInput").value;
-
-if(usedCodes.includes(val)){
-document.getElementById("promoMsg").innerText = "Already used!";
-return;
-}
-
-if(codes.includes(val)){
-gold += 100;
+let val=codeInput.value;
+if(usedCodes.includes(val))return;
+gold+=100;
+stats.goldEarned+=100;
 usedCodes.push(val);
-document.getElementById("promoMsg").innerText = "+100 Gold!";
 update();
-} else {
-document.getElementById("promoMsg").innerText = "Invalid code";
 }
+
+/* PROFILE */
+function saveProfile(){
+name=nickname.value||name;
+color=colorInput.value||color;
+update();
+}
+
+function setAvatar(a){
+avatar=a;
+update();
+}
+
+function reset(){
+localStorage.clear();
+location.reload();
 }
 
 /* UPDATE */
 function update(){
-document.getElementById("coins").innerText = coins;
-document.getElementById("gold").innerText = gold;
-document.getElementById("power").innerText = power;
+coinsEl.innerText=coins;
+goldEl.innerText=gold;
+powerEl.innerText=power;
+upgradeCostEl.innerText=upgradeCost;
+
+nameEl.innerText=name;
+nameEl.style.color=color;
+avatarEl.innerText=avatar;
+
+statCoins.innerText=stats.coinsEarned;
+statCoinsSpent.innerText=stats.coinsSpent;
+statGold.innerText=stats.goldEarned;
+statGoldSpent.innerText=stats.goldSpent;
+statSkins.innerText=stats.skins;
+statInv.innerText=inventory.length;
 
 renderInv();
 save();
@@ -278,21 +303,24 @@ save();
 
 /* SAVE */
 function save(){
-localStorage.setItem("save", JSON.stringify({
-coins,
-gold,
-power,
-inventory,
-usedCodes,
-upgradeCost
-}));
+localStorage.save=JSON.stringify({
+coins,gold,power,upgradeCost,inventory,usedCodes,stats,name,color,avatar
+});
 }
 
 /* NAV */
-function show(page){
-document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
-document.getElementById(page).classList.add("active");
+function show(p){
+document.querySelectorAll(".page").forEach(e=>e.classList.remove("active"));
+document.getElementById(p).classList.add("active");
 }
+
+/* SHORT IDS */
+const coinsEl=document.getElementById("coins");
+const goldEl=document.getElementById("gold");
+const powerEl=document.getElementById("power");
+const upgradeCostEl=document.getElementById("upgradeCost");
+const nameEl=document.getElementById("name");
+const avatarEl=document.getElementById("avatar");
 
 </script>
 

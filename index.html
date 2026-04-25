@@ -14,17 +14,14 @@ body{
   text-align:center;
 }
 
-/* TOP */
 .top{
   padding:10px;
-  font-size:20px;
+  font-size:18px;
 }
 
-/* PAGE */
 .page{display:none; padding:10px;}
 .active{display:block;}
 
-/* BUTTONS */
 button{
   padding:10px;
   margin:5px;
@@ -32,7 +29,6 @@ button{
   cursor:pointer;
 }
 
-/* BOTTOM NAV */
 .nav{
   position:fixed;
   bottom:0;
@@ -46,13 +42,9 @@ button{
   border:none;
   background:#1f2937;
   color:white;
-  font-size:14px;
-}
-.nav button:hover{
-  background:#374151;
+  padding:10px;
 }
 
-/* INVENTORY CARD */
 .card{
   border:1px solid #333;
   margin:5px;
@@ -65,77 +57,117 @@ button{
 <body>
 
 <div class="top">
-💰 Coins: <span id="coins">0</span> | 🔥 Power: <span id="power">1</span>
+💰 Coins: <span id="coins">0</span> | 🟡 Gold: <span id="gold">0</span> | 🔥 Power: <span id="power">1</span>
 </div>
 
-<!-- CLICK PAGE -->
+<!-- CLICK -->
 <div id="click" class="page active">
   <h2>🔫 Click</h2>
   <img src="image.png" width="160" onclick="clickGun()" style="cursor:pointer">
   <br><br>
-  <button onclick="upgrade()">Upgrade (50💰)</button>
+  <button onclick="upgrade()">🔼 Upgrade (100 Gold)</button>
 </div>
 
 <!-- SHOP -->
 <div id="shop" class="page">
-  <h2>🏪 Магазин</h2>
+<h2>🏪 Магазин</h2>
 
-  <button onclick="buy('AK-47',100)">AK-47 - 100</button>
-  <button onclick="buy('M4A1',150)">M4A1 - 150</button>
-  <button onclick="buy('AWP',300)">AWP - 300</button>
-  <button onclick="buy('Deagle',80)">Deagle - 80</button>
-  <button onclick="buy('Glock',50)">Glock - 50</button>
-  <button onclick="buy('Knife',40)">Knife - 40</button>
-  <button onclick="buy('P90',120)">P90 - 120</button>
-  <button onclick="buy('Shotgun',200)">Shotgun - 200</button>
+<button onclick="buy('AK-47',100)">AK-47 - 100</button>
+<button onclick="buy('M4A1',150)">M4A1 - 150</button>
+<button onclick="buy('AWP',300)">AWP - 300</button>
+<button onclick="buy('Deagle',80)">Deagle - 80</button>
+<button onclick="buy('Glock',50)">Glock - 50</button>
+<button onclick="buy('Knife',40)">Knife - 40</button>
+<button onclick="buy('P90',120)">P90 - 120</button>
+<button onclick="buy('Shotgun',200)">Shotgun - 200</button>
 </div>
 
 <!-- CASES -->
 <div id="cases" class="page">
-  <h2>📦 Кейси</h2>
+<h2>📦 Кейси</h2>
 
-  <button onclick="openCase('Marshmall')">Marshmall</button>
-  <button onclick="openCase('Sand of Time')">Sand of Time</button>
-  <button onclick="openCase('Jlister')">Jlister</button>
-  <button onclick="openCase('Past Reapel')">Past Reapel</button>
+<div style="display:flex; overflow-x:auto; gap:10px; padding:10px;">
+  <button onclick="openCase('Marshmall')">Marshmall (200)</button>
+  <button onclick="openCase('Sand of Time')">Sand (400)</button>
+  <button onclick="openCase('Jlister')">Jlister (600)</button>
+  <button onclick="openCase('Past Reapel')">Reapel (800)</button>
+  <button onclick="openCase('Pro')">🔥 Pro (1000)</button>
+</div>
 
-  <p id="caseResult"></p>
+<p id="caseResult"></p>
 </div>
 
 <!-- INVENTORY -->
 <div id="inv" class="page">
-  <h2>🎒 Інвентар</h2>
-  <div id="inventory"></div>
+<h2>🎒 Інвентар</h2>
+<div id="inventory"></div>
+</div>
+
+<!-- PROMO -->
+<div id="promo" class="page">
+<h2>🎁 Промокоди</h2>
+
+<input id="codeInput" placeholder="Enter code">
+<br><br>
+<button onclick="useCode()">Activate</button>
+
+<p id="promoMsg"></p>
 </div>
 
 <!-- NAV -->
 <div class="nav">
-  <button onclick="show('click')">Click</button>
-  <button onclick="show('shop')">Shop</button>
-  <button onclick="show('cases')">Cases</button>
-  <button onclick="show('inv')">Inventory</button>
+<button onclick="show('click')">Click</button>
+<button onclick="show('shop')">Shop</button>
+<button onclick="show('cases')">Cases</button>
+<button onclick="show('inv')">Inventory</button>
+<button onclick="show('promo')">Promo</button>
 </div>
 
 <script>
 
 let coins = 0;
+let gold = 0;
 let power = 1;
-let inventory = [];
+let upgradeCost = 100;
 
-/* CASES + SKINS */
+let inventory = [];
+let usedCodes = [];
+
+/* CASES */
 const cases = {
-  "Marshmall": ["AK-47 Marsh", "Knife Marsh", "M4 Marsh"],
+  "Marshmall": ["AK Marsh", "Knife Marsh", "M4 Marsh"],
   "Sand of Time": ["AWP Sand", "Deagle Sand", "AK Sand"],
   "Jlister": ["Glock J", "P90 J", "M4 J"],
-  "Past Reapel": ["Reaper AK", "Ghost Knife", "Dark AWP"]
+  "Past Reapel": ["Reaper AK", "Ghost Knife", "Dark AWP"],
+  "Pro": ["Sticker Dragon Pro", "Sticker Neon Pro", "Sticker Gold Pro"]
 };
+
+const casePrices = {
+  "Marshmall": 200,
+  "Sand of Time": 400,
+  "Jlister": 600,
+  "Past Reapel": 800,
+  "Pro": 1000
+};
+
+/* PROMO CODES */
+const codes = [
+"Block Strike","Pro48k","PositIv4IkBS","Update","Gold",
+"Marsh","Holiday's","Top","Sand","2025","2026","2027 year",
+"BRDAY","Happy year"
+];
 
 /* LOAD */
 if(localStorage.getItem("save")){
   let data = JSON.parse(localStorage.getItem("save"));
-  coins = data.coins;
-  power = data.power;
-  inventory = data.inventory;
+
+  coins = data.coins || 0;
+  gold = data.gold || 0;
+  power = data.power || 1;
+  inventory = data.inventory || [];
+  usedCodes = data.usedCodes || [];
+  upgradeCost = data.upgradeCost || 100;
+
   update();
 }
 
@@ -145,11 +177,12 @@ function clickGun(){
   update();
 }
 
-/* UPGRADE */
+/* UPGRADE (дорожчає на +100 Gold) */
 function upgrade(){
-  if(coins >= 50){
-    coins -= 50;
+  if(gold >= upgradeCost){
+    gold -= upgradeCost;
     power++;
+    upgradeCost += 100;
     update();
   }
 }
@@ -165,8 +198,19 @@ function buy(name, price){
 
 /* CASES */
 function openCase(type){
+
+  let price = casePrices[type];
+
+  if(gold < price){
+    alert("Not enough Gold!");
+    return;
+  }
+
+  gold -= price;
+
   let items = cases[type];
   let item = items[Math.floor(Math.random()*items.length)];
+
   inventory.push(item);
 
   document.getElementById("caseResult").innerText = "🎉 You got: " + item;
@@ -184,6 +228,7 @@ function sell(i){
 /* INVENTORY */
 function renderInv(){
   let html = "";
+
   inventory.forEach((item,i)=>{
     html += `
       <div class="card">
@@ -192,12 +237,34 @@ function renderInv(){
       </div>
     `;
   });
+
   document.getElementById("inventory").innerHTML = html;
+}
+
+/* PROMO */
+function useCode(){
+  let val = document.getElementById("codeInput").value;
+
+  if(usedCodes.includes(val)){
+    document.getElementById("promoMsg").innerText = "Already used!";
+    return;
+  }
+
+  if(codes.includes(val)){
+    gold += 100;
+    usedCodes.push(val);
+    document.getElementById("promoMsg").innerText = "+100 Gold!";
+    update();
+  } else {
+    document.getElementById("promoMsg").innerText = "Invalid code";
+  }
 }
 
 /* UPDATE */
 function update(){
+
   document.getElementById("coins").innerText = coins;
+  document.getElementById("gold").innerText = gold;
   document.getElementById("power").innerText = power;
 
   renderInv();
@@ -208,8 +275,11 @@ function update(){
 function save(){
   localStorage.setItem("save", JSON.stringify({
     coins,
+    gold,
     power,
-    inventory
+    inventory,
+    usedCodes,
+    upgradeCost
   }));
 }
 

@@ -3,11 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BS Clicker</title>
+<title>Block Strike Clicker</title>
 
 <style>
 body{margin:0;font-family:Arial;background:#0b1220;color:white;text-align:center}
-#loading{position:fixed;width:100%;height:100%;background:black;display:flex;justify-content:center;align-items:center;font-size:30px;z-index:999}
+
+#loading{
+position:fixed;inset:0;
+background:black;
+display:flex;
+justify-content:center;
+align-items:center;
+font-size:28px;
+z-index:999;
+}
 
 .top{padding:10px}
 .page{display:none;padding:10px}
@@ -16,32 +25,35 @@ body{margin:0;font-family:Arial;background:#0b1220;color:white;text-align:center
 button{padding:10px;margin:5px;border-radius:10px;cursor:pointer}
 
 .nav{
-position:fixed;bottom:0;width:100%;
-display:flex;overflow-x:auto;
+position:fixed;
+bottom:0;
+width:100%;
+display:flex;
+overflow-x:auto;
 background:#111827;
 }
+
 .nav button{
 flex:0 0 auto;
-min-width:80px;
+min-width:85px;
 background:#1f2937;
-color:white;border:none;
+color:white;
+border:none;
 }
 
 .card{
 border:1px solid #333;
-margin:5px;padding:5px;
+margin:5px;
+padding:5px;
 border-radius:10px;
 }
-
-.colors button{
-width:30px;height:30px;border:none;margin:3px;
-}
+.colors button{width:30px;height:30px;border:none;margin:3px}
 </style>
 </head>
 
 <body>
 
-<div id="loading">Loading...</div>
+<div id="loading">Loading Game...</div>
 
 <div class="top">
 <span id="name">Player</span> <span id="avatar">🔫</span><br>
@@ -51,30 +63,35 @@ width:30px;height:30px;border:none;margin:3px;
 <!-- CLICK -->
 <div id="click" class="page active">
 <h2>🔫 Click</h2>
-<img src="image.png" width="140" onclick="clickGun()" style="cursor:pointer">
+<img src="image.png" width="140" onclick="clickGun()">
 <br>
-<button onclick="upgrade()">Upgrade (<span id="upgradeCost">100</span>)</button>
+<button onclick="upgrade()">Upgrade</button>
 </div>
 
 <!-- SHOP -->
 <div id="shop" class="page">
 <h2>🏪 Магазин</h2>
-<button onclick="buy('AK-47',100)">AK-47 - 100</button>
-<button onclick="buy('AWP',300)">AWP - 300</button>
-<button onclick="buy('Knife',50)">Knife - 50</button>
+
+<button onclick="buy('AK-47',100)">AK-47</button>
+<button onclick="buy('M4A1',150)">M4A1</button>
+<button onclick="buy('AWP',300)">AWP</button>
+<button onclick="buy('Deagle',80)">Deagle</button>
+<button onclick="buy('Knife',50)">Knife</button>
 </div>
 
 <!-- CASES -->
 <div id="cases" class="page">
 <h2>📦 Кейси</h2>
+
 <div style="display:flex;overflow-x:auto;">
-<button onclick="openCase('Marshmall')">🍬 200</button>
-<button onclick="openCase('Sand')">🏜 400</button>
-<button onclick="openCase('Jlister')">🧪 600</button>
-<button onclick="openCase('Reapel')">💀 800</button>
-<button onclick="openCase('Pro')">🔥 1000</button>
-<button onclick="openCase('Sticker')">📜 500 coins</button>
+<button onclick="openCase('Basic')">🟤200</button>
+<button onclick="openCase('Rare')">🔵400</button>
+<button onclick="openCase('Epic')">🟣600</button>
+<button onclick="openCase('Legend')">🟡800</button>
+<button onclick="openCase('Pro')">🔴1000</button>
+<button onclick="openCase('Sticker')">📜500</button>
 </div>
+
 <p id="caseResult"></p>
 </div>
 
@@ -87,9 +104,11 @@ width:30px;height:30px;border:none;margin:3px;
 <!-- PROMO -->
 <div id="promo" class="page">
 <h2>🎁 Промокоди</h2>
-<input id="codeInput" placeholder="Введи код">
-<br><br>
-<button onclick="useCode()">Активувати</button>
+
+<input id="codeInput" placeholder="Enter code">
+<br>
+<button onclick="useCode()">Activate</button>
+
 <p id="promoMsg"></p>
 </div>
 
@@ -100,30 +119,25 @@ width:30px;height:30px;border:none;margin:3px;
 <input id="nickname" placeholder="Name">
 <button onclick="saveProfile()">Save</button>
 
-<h3>🎨 Колір ніку</h3>
+<h3>🎨 Колір</h3>
 <div class="colors">
 <button style="background:red" onclick="setColor('red')"></button>
 <button style="background:blue" onclick="setColor('blue')"></button>
 <button style="background:lime" onclick="setColor('lime')"></button>
 <button style="background:yellow" onclick="setColor('yellow')"></button>
-<button style="background:cyan" onclick="setColor('cyan')"></button>
-<button style="background:pink" onclick="setColor('pink')"></button>
 </div>
 
 <h3>🎭 Аватар</h3>
 <button onclick="setAvatar('🔫')">🔫</button>
 <button onclick="setAvatar('📷')">📷</button>
 <button onclick="setAvatar('🎩')">🎩</button>
-<button onclick="setAvatar('📺')">📺</button>
-<button onclick="setAvatar('🎥')">🎥</button>
-<button onclick="setAvatar('🧸')">🧸</button>
 <button onclick="setAvatar('🕶️')">🕶️</button>
 
 <h3>📊 Статистика</h3>
 <p>Coins: <span id="statCoins"></span></p>
 <p>Gold: <span id="statGold"></span></p>
 <p>Skins: <span id="statSkins"></span></p>
-<p>Time: <span id="timePlayed"></span> сек</p>
+<p>Time: <span id="timePlayed"></span>s</p>
 
 <button onclick="reset()">Reset</button>
 </div>
@@ -140,29 +154,29 @@ width:30px;height:30px;border:none;margin:3px;
 
 <script>
 
-let coins=0,gold=0,power=1,upgradeCost=100;
+let coins=0,gold=0,upgradeCost=100;
 let inventory=[],time=0;
 let usedCodes=[];
 
 let stats={coins:0,gold:0,skins:0};
 
-let playerName="Player",playerColor="white",avatar="🔫";
+let name="Player",color="white",avatar="🔫";
 
 /* CASES */
 const cases={
-Marshmall:[["Candy AK","Common"],["Sweet Knife","Rare"]],
-Sand:[["Sand AWP","Rare"],["Golden Sand","Epic"]],
-Jlister:[["J Gun","Epic"]],
-Reapel:[["Reaper","Legendary"]],
-Pro:[["Fire Skin","Mythic"]],
-Sticker:[["Sticker Skull","Common"],["Sticker Gold","Legendary"]]
+Basic:["AK-47","M4A1","Glock"],
+Rare:["AWP","P90","M4 Blue"],
+Epic:["AK Neon","AWP Fire","Knife Flame"],
+Legend:["AWP Mythic","AK Galaxy","Deagle Ultra"],
+Pro:["Karambit Galactic","AK Pro","AWP Star"],
+Sticker:["Sticker Skull","Sticker Fire","Sticker Gold"]
 };
 
 const prices={
-Marshmall:200,Sand:400,Jlister:600,Reapel:800,Pro:1000,Sticker:500
+Basic:200,Rare:400,Epic:600,Legend:800,Pro:1000,Sticker:500
 };
 
-/* PROMO CODES */
+/* PROMOS */
 const codes=[
 "Block Strike","Pro48k","PositIv4IkBS","Update","Gold",
 "Marsh","Holiday's","Top","Sand","2025","2026","2027 year",
@@ -173,15 +187,7 @@ const codes=[
 try{
 let d=JSON.parse(localStorage.getItem("save"));
 if(d){
-coins=d.coins||0;
-gold=d.gold||0;
-inventory=d.inventory||[];
-stats=d.stats||stats;
-playerName=d.playerName||playerName;
-playerColor=d.playerColor||playerColor;
-avatar=d.avatar||avatar;
-time=d.time||0;
-usedCodes=d.usedCodes||[];
+Object.assign(window,d);
 }
 }catch{}
 
@@ -190,8 +196,10 @@ setInterval(()=>{time++;update()},1000);
 
 /* CLICK */
 function clickGun(){
-coins++;gold++;
-stats.coins++;stats.gold++;
+coins++;
+gold++;
+stats.coins++;
+stats.gold++;
 update();
 }
 
@@ -199,24 +207,22 @@ update();
 function upgrade(){
 if(gold>=upgradeCost){
 gold-=upgradeCost;
-power++;
 upgradeCost+=100;
 update();
 }
 }
 
 /* SHOP */
-function buy(name,price){
-if(coins>=price){
-coins-=price;
-stats.coins+=price;
-inventory.push(name);
+function buy(n,p){
+if(coins>=p){
+coins-=p;
+inventory.push(n);
 stats.skins++;
 update();
-}else alert("Нема коінів");
+}
 }
 
-/* CASE */
+/* CASES */
 function openCase(t){
 let p=prices[t];
 
@@ -229,10 +235,12 @@ gold-=p;
 }
 
 let item=cases[t][Math.floor(Math.random()*cases[t].length)];
-inventory.push(item[0]+" ("+item[1]+")");
+
+inventory.push(item);
 stats.skins++;
 
-caseResult.innerText=item[0]+" - "+item[1];
+caseResult.innerText="🎉 "+item;
+
 update();
 }
 
@@ -256,54 +264,54 @@ let html="";
 inventory.forEach((i,x)=>{
 html+=`<div class="card">${i}<button onclick="sell(${x})">Sell</button></div>`;
 });
-document.getElementById("inventory").innerHTML=html;
+inventory.innerHTML=html;
 }
 
 /* PROMO */
 function useCode(){
-let val=document.getElementById("codeInput").value;
+let v=document.getElementById("codeInput").value;
 
-if(usedCodes.includes(val)){
-promoMsg.innerText="Вже використано";
+if(usedCodes.includes(v)){
+promoMsg.innerText="Used";
 return;
 }
 
-/* SPECIAL GALACTIC */
-if(val==="Galactic"){
-inventory.push("Karambit Galactic (Mythic)");
-usedCodes.push(val);
-promoMsg.innerText="🔥 Отримано Karambit Galactic!";
+if(v==="Galactic"){
+inventory.push("Karambit Galactic");
+usedCodes.push(v);
+promoMsg.innerText="🔥 Galactic Knife!";
 update();
 return;
 }
 
-if(codes.includes(val)){
+if(codes.includes(v)){
 gold+=100;
 stats.gold+=100;
-usedCodes.push(val);
+usedCodes.push(v);
 promoMsg.innerText="+100 Gold";
 update();
 }else{
-promoMsg.innerText="Невірний код";
+promoMsg.innerText="Wrong code";
 }
 }
 
 /* PROFILE */
 function saveProfile(){
-playerName=document.getElementById("nickname").value||playerName;
+name=document.getElementById("nickname").value||name;
 update();
 }
-function setColor(c){playerColor=c;update();}
+function setColor(c){color=c;update();}
 function setAvatar(a){avatar=a;update();}
 function reset(){localStorage.clear();location.reload();}
 
 /* UPDATE */
 function update(){
+
 coinsEl.innerText=coins;
 goldEl.innerText=gold;
 
-nameEl.innerText=playerName;
-nameEl.style.color=playerColor;
+nameEl.innerText=name;
+nameEl.style.color=color;
 avatarEl.innerText=avatar;
 
 statCoins.innerText=stats.coins;
@@ -318,7 +326,7 @@ save();
 /* SAVE */
 function save(){
 localStorage.setItem("save",JSON.stringify({
-coins,gold,inventory,stats,playerName,playerColor,avatar,time,usedCodes
+coins,gold,upgradeCost,inventory,stats,name,color,avatar,time,usedCodes
 }));
 }
 
@@ -344,9 +352,9 @@ const caseResult=document.getElementById("caseResult");
 setTimeout(()=>{
 document.getElementById("loading").style.display="none";
 update();
-},1000);
+},1200);
 
 </script>
 
 </body>
-                                               </html>
+  </html>

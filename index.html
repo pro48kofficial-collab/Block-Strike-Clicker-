@@ -168,9 +168,10 @@ const prices={
 Marshmall:200,Sand:400,Jlister:600,Reapel:800,Pro:1000,Sticker:500
 };
 
-/* LOAD */
-if(localStorage.getItem("save")){
+/* SAFE LOAD */
+try{
 let d=JSON.parse(localStorage.getItem("save"));
+if(d){
 coins=d.coins||0;
 gold=d.gold||0;
 power=d.power||1;
@@ -182,12 +183,9 @@ playerName=d.playerName||"Player";
 playerColor=d.playerColor||"white";
 avatar=d.avatar||"🔫";
 }
-
-/* LOADING */
-window.onload=()=>{
-setTimeout(()=>{document.getElementById("loading").style.display="none";},1000);
-update();
-};
+}catch(e){
+localStorage.removeItem("save");
+}
 
 /* CLICK */
 function clickGun(){
@@ -209,7 +207,7 @@ update();
 }
 }
 
-/* BUY */
+/* SHOP */
 function buy(n,p){
 if(coins>=p){
 coins-=p;
@@ -225,11 +223,11 @@ function openCase(t){
 let p=prices[t];
 
 if(t==="Sticker"){
-if(coins<p){alert("No coins");return;}
+if(coins<p)return alert("No coins");
 coins-=p;
 stats.coinsSpent+=p;
 }else{
-if(gold<p){alert("No gold");return;}
+if(gold<p)return alert("No gold");
 gold-=p;
 stats.goldSpent+=p;
 }
@@ -304,24 +302,25 @@ localStorage.clear();
 location.reload();
 }
 
-/* UPDATE */
+/* UPDATE SAFE */
 function update(){
+if(document.getElementById("coins"))document.getElementById("coins").innerText=coins;
+if(document.getElementById("gold"))document.getElementById("gold").innerText=gold;
+if(document.getElementById("power"))document.getElementById("power").innerText=power;
+if(document.getElementById("upgradeCost"))document.getElementById("upgradeCost").innerText=upgradeCost;
 
-document.getElementById("coins").innerText=coins;
-document.getElementById("gold").innerText=gold;
-document.getElementById("power").innerText=power;
-document.getElementById("upgradeCost").innerText=upgradeCost;
+let nameEl=document.getElementById("name");
+if(nameEl){nameEl.innerText=playerName;nameEl.style.color=playerColor;}
 
-document.getElementById("name").innerText=playerName;
-document.getElementById("name").style.color=playerColor;
-document.getElementById("avatar").innerText=avatar;
+let avatarEl=document.getElementById("avatar");
+if(avatarEl)avatarEl.innerText=avatar;
 
-document.getElementById("statCoins").innerText=stats.coinsEarned;
-document.getElementById("statCoinsSpent").innerText=stats.coinsSpent;
-document.getElementById("statGold").innerText=stats.goldEarned;
-document.getElementById("statGoldSpent").innerText=stats.goldSpent;
-document.getElementById("statSkins").innerText=stats.skins;
-document.getElementById("statInv").innerText=inventory.length;
+if(document.getElementById("statCoins"))document.getElementById("statCoins").innerText=stats.coinsEarned;
+if(document.getElementById("statCoinsSpent"))document.getElementById("statCoinsSpent").innerText=stats.coinsSpent;
+if(document.getElementById("statGold"))document.getElementById("statGold").innerText=stats.goldEarned;
+if(document.getElementById("statGoldSpent"))document.getElementById("statGoldSpent").innerText=stats.goldSpent;
+if(document.getElementById("statSkins"))document.getElementById("statSkins").innerText=stats.skins;
+if(document.getElementById("statInv"))document.getElementById("statInv").innerText=inventory.length;
 
 renderInv();
 save();
@@ -329,7 +328,7 @@ save();
 
 /* SAVE */
 function save(){
-localStorage.setItem("save", JSON.stringify({
+localStorage.setItem("save",JSON.stringify({
 coins,gold,power,upgradeCost,inventory,usedCodes,stats,playerName,playerColor,avatar
 }));
 }
@@ -339,6 +338,13 @@ function show(p){
 document.querySelectorAll(".page").forEach(e=>e.classList.remove("active"));
 document.getElementById(p).classList.add("active");
 }
+
+/* LOADING FIX */
+setTimeout(()=>{
+let l=document.getElementById("loading");
+if(l)l.style.display="none";
+update();
+},1000);
 
 </script>
 

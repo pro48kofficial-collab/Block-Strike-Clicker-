@@ -9,327 +9,345 @@
 body{
     margin:0;
     font-family:Arial;
-    background:#0b0f1a;
+    background:#0a0f1f;
     color:#fff;
-    text-align:center;
 }
 
+/* LOADING */
+#loading{
+    position:fixed;
+    width:100%;
+    height:100%;
+    background:#000;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    z-index:999;
+}
+.loader{
+    border:5px solid #222;
+    border-top:5px solid #00f0ff;
+    border-radius:50%;
+    width:60px;
+    height:60px;
+    animation:spin 1s linear infinite;
+}
+@keyframes spin{
+    0%{transform:rotate(0)}
+    100%{transform:rotate(360deg)}
+}
+
+/* TOP */
+.top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background:#111827;
+    padding:10px;
+}
+.profile{display:flex;align-items:center;}
+.avatar{
+    width:40px;height:40px;border-radius:50%;
+    border:2px solid #00f0ff;margin-right:10px;
+}
+
+/* SCREEN */
 .screen{display:none;padding:10px;}
 .active{display:block;}
 
 button{
+    width:90%;
     margin:5px;
-    padding:10px;
+    padding:12px;
     border:none;
     border-radius:10px;
-    background:#1e90ff;
+    background:linear-gradient(45deg,#00f0ff,#0066ff);
     color:white;
+    font-weight:bold;
 }
 
-img{
-    width:120px;
-}
-
-.top{
-    background:#111;
+.card{
+    background:#111827;
     padding:10px;
-}
-
-.menu button{
-    width:90%;
-}
-
-.item{
-    background:#111;
     margin:5px;
-    padding:10px;
     border-radius:10px;
 }
 
-.common{color:gray}
-rare{color:blue}
-.epic{color:purple}
-.legendary{color:orange}
+/* IMAGE */
+.main-img{
+    width:40vw;
+    max-width:220px;
+    min-width:140px;
+    margin:10px;
+    transition:0.1s;
+}
 
+/* PULSE */
+@keyframes pulse{
+    0%{transform:scale(1)}
+    50%{transform:scale(1.1)}
+    100%{transform:scale(1)}
+}
+.pulse{animation:pulse 0.2s;}
+
+/* RARITY */
+.common{color:#aaa}
+.rare{color:#3aa0ff}
+.epic{color:#c04cff}
+.legendary{color:#ff9f00}
+.mythic{color:#ff3b3b}
 </style>
 </head>
 
 <body>
 
+<div id="loading">
+    <div class="loader"></div>
+    <h2>Загрузка...</h2>
+</div>
+
 <div class="top">
-    <div id="nick">Гравець</div>
-    💰 Gold: <span id="gold">0</span> | 🪙 Silver: <span id="silver">0</span>
+    <div class="profile">
+        <img id="avatar" class="avatar">
+        <div id="nick">Гравець</div>
+    </div>
+    <div>💰 <span id="gold">0</span> | 🪙 <span id="silver">0</span></div>
 </div>
 
 <!-- MENU -->
-<div id="menu" class="screen active menu">
-    <img src="image.png">
-    <br>
-    <button onclick="clickGold()">КЛІК</button>
-    <button onclick="buyUpgrade()">Апгрейд (+1)</button>
-    <div id="upgradePrice"></div>
+<div id="menu" class="screen active">
+<center>
+<img src="image.png" class="main-img"><br>
 
-    <button onclick="openScreen('shop')">Магазин</button>
-    <button onclick="openScreen('inventory')">Інвентар</button>
-    <button onclick="openScreen('cases')">Кейси</button>
-    <button onclick="openScreen('promo')">Промокоди</button>
-    <button onclick="openScreen('profile')">Профіль</button>
+<button onclick="clickGold()">КЛІК</button>
+<button onclick="buyUpgrade()">Апгрейд (+1)</button>
+<div id="upgradePrice"></div>
+
+<button onclick="openScreen('shop')">Магазин</button>
+<button onclick="openScreen('inventory')">Інвентар</button>
+<button onclick="openScreen('cases')">Кейси</button>
+<button onclick="openScreen('promo')">Промокоди</button>
+<button onclick="openScreen('profileScreen')">Профіль</button>
+</center>
 </div>
 
 <!-- SHOP -->
 <div id="shop" class="screen">
-    <h2>Магазин</h2>
-    <div id="shopItems"></div>
-    <button onclick="openScreen('menu')">Назад</button>
+<h2>Магазин</h2>
+<div id="shopItems"></div>
+<button onclick="openScreen('menu')">Назад</button>
 </div>
 
 <!-- INVENTORY -->
 <div id="inventory" class="screen">
-    <h2>Інвентар</h2>
-    <div id="inv"></div>
-    <button onclick="openScreen('menu')">Назад</button>
+<h2>Інвентар</h2>
+<div id="inv"></div>
+<button onclick="openScreen('menu')">Назад</button>
 </div>
 
 <!-- CASES -->
 <div id="cases" class="screen">
-    <h2>Кейси</h2>
-    <button onclick="openCase('Marshmall',200)">Marshmall (200G)</button>
-    <button onclick="openCase('Past Reapel',300)">Past Reapel (300G)</button>
-    <button onclick="openCase('Jlister',500)">Jlister (500G)</button>
-    <button onclick="openCase('Sand of Time',1000)">Sand of Time (1000G)</button>
-    <button onclick="openCase('Pro',1500)">Pro (1500G)</button>
-    <button onclick="openCaseSilver()">Sticker (600S) 😊</button>
-    <button onclick="openScreen('menu')">Назад</button>
+<h2>Кейси</h2>
+<button onclick="openCase('Marshmall',200)">Marshmall (200G)</button>
+<button onclick="openCase('Past Reapel',300)">Past Reapel (300G)</button>
+<button onclick="openCase('Jlister',500)">Jlister (500G)</button>
+<button onclick="openCase('Sand of Time',1000)">Sand of Time (1000G)</button>
+<button onclick="openCase('Pro',1500)">Pro (1500G)</button>
+<button onclick="openCaseSilver()">Sticker 😊 (600S)</button>
+<button onclick="openScreen('menu')">Назад</button>
 </div>
 
 <!-- PROMO -->
 <div id="promo" class="screen">
-    <h2>Промокод</h2>
-    <input id="promoInput">
-    <button onclick="usePromo()">Ввести</button>
-    <div id="promoMsg"></div>
-    <button onclick="openScreen('menu')">Назад</button>
+<h2>Промокод</h2>
+<input id="promoInput">
+<button onclick="usePromo()">Ввести</button>
+<div id="promoMsg"></div>
+<button onclick="openScreen('menu')">Назад</button>
 </div>
 
 <!-- PROFILE -->
-<div id="profile" class="screen">
-    <h2>Профіль</h2>
+<div id="profileScreen" class="screen">
+<h2>Профіль</h2>
 
-    <input id="nameInput" placeholder="Нік">
-    <button onclick="saveName()">Зберегти</button><br>
+<input id="nameInput" placeholder="Нік">
+<button onclick="saveName()">Зберегти</button><br>
 
-    <input type="color" id="colorPick">
-    <button onclick="setColor()">Колір</button><br>
+<input type="color" id="colorPick">
+<button onclick="setColor()">Колір</button><br>
 
-    <input type="file" onchange="changeAvatar(event)"><br>
+<input type="file" onchange="changeAvatar(event)"><br>
 
-    <button onclick="resetGame()">Скинути прогрес</button>
+<button onclick="resetGame()">Скинути прогрес</button>
 
-    <h3>Статистика</h3>
-    <div id="stats"></div>
+<h3>Статистика</h3>
+<div id="stats"></div>
 
-    <button onclick="openScreen('menu')">Назад</button>
+<button onclick="openScreen('menu')">Назад</button>
 </div>
 
 <script>
-
 let data = JSON.parse(localStorage.getItem("bs_clicker")) || {
-    gold:0,
-    silver:0,
-    click:1,
-    upgrade:100,
-    inv:[],
-    usedPromo:[],
-    stats:{
-        earnedGold:0,
-        spentGold:0,
-        earnedSilver:0,
-        spentSilver:0,
-        clicks:0,
-        time:0
-    },
-    name:"Гравець",
-    color:"#fff"
+gold:0,silver:0,click:1,upgrade:100,
+inv:[],avatar:"",name:"Гравець",color:"#fff",
+usedPromo:[],
+stats:{clicks:0,time:0,earnedGold:0,spentGold:0,earnedSilver:0,spentSilver:0}
 };
 
 setInterval(()=>{data.stats.time++;save()},1000);
 
-function save(){
-    localStorage.setItem("bs_clicker",JSON.stringify(data));
-}
+function save(){localStorage.setItem("bs_clicker",JSON.stringify(data));}
 
 function update(){
-    gold.innerText=data.gold;
-    silver.innerText=data.silver;
-    upgradePrice.innerText="Ціна: "+data.upgrade;
-    nick.innerText=data.name;
-    nick.style.color=data.color;
-    renderInv();
-    renderShop();
-    renderStats();
+gold.innerText=data.gold;
+silver.innerText=data.silver;
+nick.innerText=data.name;
+nick.style.color=data.color;
+avatar.src=data.avatar||"https://cdn-icons-png.flaticon.com/512/149/149071.png";
+upgradePrice.innerText="Ціна: "+data.upgrade;
+renderShop();renderInv();renderStats();
 }
 
 function clickGold(){
-    data.gold+=data.click;
-    data.silver+=data.click;
-    data.stats.clicks++;
-    data.stats.earnedGold+=data.click;
-    data.stats.earnedSilver+=data.click;
-    update();save();
+data.gold+=data.click;
+data.silver+=data.click;
+data.stats.clicks++;
+
+let img=document.querySelector(".main-img");
+img.classList.add("pulse");
+setTimeout(()=>img.classList.remove("pulse"),200);
+
+update();save();
 }
 
 function buyUpgrade(){
-    if(data.gold>=data.upgrade){
-        data.gold-=data.upgrade;
-        data.click++;
-        data.upgrade+=100;
-        data.stats.spentGold+=data.upgrade;
-    }
-    update();save();
+if(data.gold>=data.upgrade){
+data.gold-=data.upgrade;
+data.click++;
+data.upgrade+=100;
+}
+update();save();
 }
 
 function openScreen(id){
-    document.querySelectorAll(".screen").forEach(e=>e.classList.remove("active"));
-    document.getElementById(id).classList.add("active");
+document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+document.getElementById(id).classList.add("active");
 }
 
-let weapons=[
-"AK-47","M4","P90","AWP","Deagle","UMP","MP5","Famas","Glock","Knife",
-"Karambit","Shotgun","Sniper","USP","Vector","Aug","SG","CZ","R8","MAC10"
-];
+/* SHOP */
+let weapons=["AK-47","M4","P90","AWP","Deagle","UMP","MP5","Famas","Glock","Knife","Karambit","Shotgun","Sniper","USP","Vector","Aug","SG","CZ","R8","MAC10"];
 
 function renderShop(){
-    shopItems.innerHTML="";
-    weapons.forEach(w=>{
-        let div=document.createElement("div");
-        div.className="item";
-        div.innerHTML=`${w} - 200G <button onclick="buyWeapon('${w}')">Купити</button>`;
-        shopItems.appendChild(div);
-    });
+shopItems.innerHTML="";
+weapons.forEach(w=>{
+let div=document.createElement("div");
+div.className="card";
+div.innerHTML=`${w} - 200G <button onclick="buyWeapon('${w}')">Купити</button>`;
+shopItems.appendChild(div);
+});
 }
 
 function buyWeapon(w){
-    if(data.gold>=200){
-        data.gold-=200;
-        data.inv.push({name:w,price:200,rare:"common"});
-        data.stats.spentGold+=200;
-    }
-    update();save();
+if(data.gold>=200){
+data.gold-=200;
+data.inv.push({name:w,price:200,rare:"common"});
+}
+update();save();
 }
 
+/* INVENTORY */
 function renderInv(){
-    inv.innerHTML="";
-    data.inv.forEach((item,i)=>{
-        let div=document.createElement("div");
-        div.className="item";
-        div.innerHTML=`${item.name} (${item.rare}) 
-        <button onclick="sell(${i})">Продати</button>`;
-        inv.appendChild(div);
-    });
+inv.innerHTML="";
+data.inv.forEach((item,i)=>{
+let div=document.createElement("div");
+div.className="card "+item.rare;
+div.innerHTML=`${item.name} (${item.rare})
+<button onclick="sell(${i})">Продати</button>`;
+inv.appendChild(div);
+});
 }
 
 function sell(i){
-    let item=data.inv[i];
-    if(item.secret)return;
-    data.gold+=item.price;
-    data.inv.splice(i,1);
-    update();save();
+let item=data.inv[i];
+if(item.secret)return;
+data.gold+=item.price;
+data.inv.splice(i,1);
+update();save();
 }
 
+/* CASES */
 function openCase(name,price){
-    if(data.gold<price)return;
-    data.gold-=price;
+if(data.gold<price)return;
+data.gold-=price;
 
-    let rares=["common","rare","epic","legendary"];
-    let r=rares[Math.floor(Math.random()*rares.length)];
+let rares=["common","rare","epic","legendary"];
+let r=rares[Math.floor(Math.random()*rares.length)];
 
-    let item={
-        name:name+" Skin",
-        rare:r,
-        price:Math.floor(Math.random()*500)+100
-    };
+data.inv.push({
+name:name+" Skin",
+rare:r,
+price:Math.floor(Math.random()*500)+100
+});
 
-    data.inv.push(item);
-    update();save();
+update();save();
 }
 
 function openCaseSilver(){
-    if(data.silver<600)return;
-    data.silver-=600;
+if(data.silver<600)return;
+data.silver-=600;
 
-    data.inv.push({
-        name:"Sticker 😊",
-        rare:"rare",
-        price:300
-    });
+data.inv.push({name:"Sticker 😊",rare:"rare",price:300});
 
-    update();save();
+update();save();
 }
 
+/* PROMO */
 function usePromo(){
-    let p=promoInput.value;
+let p=promoInput.value;
+if(data.usedPromo.includes(p))return;
 
-    if(data.usedPromo.includes(p))return;
+let g=["Pro","PositIv4IkBS","ZCY11K","Block Strike","Update","Holiday","2025","2026","2027"];
+let s=["XX25","Top","BS","GG","Serebro"];
 
-    let goldPromo=["Pro","PositIv4IkBS","ZCY11K","Block Strike","Update","Holiday","2025","2026","2027"];
-    let silverPromo=["XX25","Top","BS","GG","Serebro"];
+if(g.includes(p)) data.gold+=100;
+else if(s.includes(p)) data.silver+=500;
+else if(p==="SekretXX56") data.inv.push({name:"Karambit Gold",rare:"mythic",secret:true});
+else if(p==="TopBHGF65") data.inv.push({name:"P90 Marsh",rare:"legendary",secret:true});
 
-    if(goldPromo.includes(p)){
-        data.gold+=100;
-    }
-    else if(silverPromo.includes(p)){
-        data.silver+=500;
-    }
-    else if(p==="SekretXX56"){
-        data.inv.push({name:"Karambit Gold",rare:"mythic",price:0,secret:true});
-    }
-    else if(p==="TopBHGF65"){
-        data.inv.push({name:"P90 Marsh",rare:"pro",price:0,secret:true});
-    }
-
-    data.usedPromo.push(p);
-    update();save();
+data.usedPromo.push(p);
+update();save();
 }
 
-function saveName(){
-    data.name=nameInput.value;
-    update();save();
-}
-
-function setColor(){
-    data.color=colorPick.value;
-    update();save();
-}
+/* PROFILE */
+function saveName(){data.name=nameInput.value;update();save();}
+function setColor(){data.color=colorPick.value;update();save();}
 
 function changeAvatar(e){
-    let file=e.target.files[0];
-    let reader=new FileReader();
-    reader.onload=()=>{
-        document.querySelector("img").src=reader.result;
-    };
-    reader.readAsDataURL(file);
+let file=e.target.files[0];
+let reader=new FileReader();
+reader.onload=()=>{data.avatar=reader.result;update();save();}
+reader.readAsDataURL(file);
 }
 
 function renderStats(){
-    stats.innerHTML=`
-    Золото зароблено: ${data.stats.earnedGold}<br>
-    Золото витрачено: ${data.stats.spentGold}<br>
-    Срібло зароблено: ${data.stats.earnedSilver}<br>
-    Срібло витрачено: ${data.stats.spentSilver}<br>
-    Кліків: ${data.stats.clicks}<br>
-    Скінів: ${data.inv.length}<br>
-    Час: ${data.stats.time} сек
-    `;
+stats.innerHTML=`
+Кліків: ${data.stats.clicks}<br>
+Час: ${data.stats.time} сек<br>
+Скінів: ${data.inv.length}
+`;
 }
 
 function resetGame(){
-    localStorage.clear();
-    location.reload();
+localStorage.clear();
+location.reload();
 }
 
-update();
+/* LOADING */
+window.onload=()=>{setTimeout(()=>loading.style.display="none",1500);};
 
+update();
 </script>
 
 </body>
-                                                 </html>
+    </html>

@@ -7,410 +7,329 @@
 
 <style>
 body{
-margin:0;
-font-family:Arial;
-background:#0b1220;
-color:white;
-text-align:center;
+    margin:0;
+    font-family:Arial;
+    background:#0b0f1a;
+    color:#fff;
+    text-align:center;
 }
 
-/* LOADING */
-#loading{
-position:fixed;
-inset:0;
-background:#000;
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:26px;
-z-index:999;
-flex-direction:column;
-}
+.screen{display:none;padding:10px;}
+.active{display:block;}
 
-/* TOP */
-.top{
-padding:10px;
-font-size:18px;
-}
-
-/* PAGES */
-.page{display:none;padding:10px}
-.active{display:block}
-
-/* BUTTONS */
 button{
-padding:10px;
-margin:5px;
-border-radius:10px;
-border:none;
-background:#1f2937;
-color:white;
-cursor:pointer;
+    margin:5px;
+    padding:10px;
+    border:none;
+    border-radius:10px;
+    background:#1e90ff;
+    color:white;
 }
 
-/* NAV */
-.nav{
-position:fixed;
-bottom:0;
-width:100%;
-display:flex;
-overflow-x:auto;
-background:#111827;
+img{
+    width:120px;
 }
 
-.nav button{
-flex:0 0 auto;
-min-width:90px;
+.top{
+    background:#111;
+    padding:10px;
 }
 
-/* INVENTORY */
-.card{
-border:1px solid #333;
-margin:5px;
-padding:5px;
-border-radius:10px;
+.menu button{
+    width:90%;
 }
+
+.item{
+    background:#111;
+    margin:5px;
+    padding:10px;
+    border-radius:10px;
+}
+
+.common{color:gray}
+rare{color:blue}
+.epic{color:purple}
+.legendary{color:orange}
+
 </style>
 </head>
 
 <body>
 
-<!-- LOADING -->
-<div id="loading">Loading Game...</div>
-
-<!-- TOP -->
 <div class="top">
-👤 <span id="name">Player</span> <span id="avatar">🔫</span><br>
-💰 Coins: <span id="coins">0</span> |
-🟡 Gold: <span id="gold">0</span> |
-⬆ Upgrade: <span id="upgradeCost">100</span>
+    <div id="nick">Гравець</div>
+    💰 Gold: <span id="gold">0</span> | 🪙 Silver: <span id="silver">0</span>
 </div>
 
-<!-- CLICK -->
-<div id="click" class="page active">
-<h2>🔫 Click</h2>
-<button onclick="clickGun()">CLICK</button>
-<button onclick="upgrade()">UPGRADE</button>
+<!-- MENU -->
+<div id="menu" class="screen active menu">
+    <img src="image.png">
+    <br>
+    <button onclick="clickGold()">КЛІК</button>
+    <button onclick="buyUpgrade()">Апгрейд (+1)</button>
+    <div id="upgradePrice"></div>
+
+    <button onclick="openScreen('shop')">Магазин</button>
+    <button onclick="openScreen('inventory')">Інвентар</button>
+    <button onclick="openScreen('cases')">Кейси</button>
+    <button onclick="openScreen('promo')">Промокоди</button>
+    <button onclick="openScreen('profile')">Профіль</button>
 </div>
 
 <!-- SHOP -->
-<div id="shop" class="page">
-<h2>🏪 Shop</h2>
-<button onclick="buy('AK-47',100)">AK-47</button>
-<button onclick="buy('AWP',300)">AWP</button>
-<button onclick="buy('Knife',50)">Knife</button>
-</div>
-
-<!-- CASES -->
-<div id="cases" class="page">
-<h2>📦 Cases</h2>
-
-<button onclick="openCase('Marshmall',300)">
-📦🌸 Marshmall — 💰300
-</button>
-
-<button onclick="openCase('Sand',500)">
-🏜️ Sand — 💰500
-</button>
-
-<button onclick="openCase('Jlister',700)">
-☣️ Jlister — 💰700
-</button>
-
-<button onclick="openCase('Reapel',900)">
-💀 Reapel — 💰900
-</button>
-
-<button onclick="openCase('Pro',1000)">
-🔥 Pro — 💰1000
-</button>
-
-<button onclick="openSticker()">
-🏷️ Sticker — 💰500 coins
-</button>
-
-</div>
-
-<!-- WHEEL -->
-<div id="wheel" class="page">
-<h2>🎡 Wheel</h2>
-<button onclick="spinWheel()">SPIN (50K gold)</button>
-<p id="wheelResult"></p>
+<div id="shop" class="screen">
+    <h2>Магазин</h2>
+    <div id="shopItems"></div>
+    <button onclick="openScreen('menu')">Назад</button>
 </div>
 
 <!-- INVENTORY -->
-<div id="inv" class="page">
-<h2>🎒 Inventory</h2>
-<div id="inventory"></div>
+<div id="inventory" class="screen">
+    <h2>Інвентар</h2>
+    <div id="inv"></div>
+    <button onclick="openScreen('menu')">Назад</button>
+</div>
+
+<!-- CASES -->
+<div id="cases" class="screen">
+    <h2>Кейси</h2>
+    <button onclick="openCase('Marshmall',200)">Marshmall (200G)</button>
+    <button onclick="openCase('Past Reapel',300)">Past Reapel (300G)</button>
+    <button onclick="openCase('Jlister',500)">Jlister (500G)</button>
+    <button onclick="openCase('Sand of Time',1000)">Sand of Time (1000G)</button>
+    <button onclick="openCase('Pro',1500)">Pro (1500G)</button>
+    <button onclick="openCaseSilver()">Sticker (600S) 😊</button>
+    <button onclick="openScreen('menu')">Назад</button>
 </div>
 
 <!-- PROMO -->
-<div id="promo" class="page">
-<h2>🎁 Promo Codes</h2>
-<input id="codeInput" placeholder="Code">
-<br>
-<button onclick="useCode()">ACTIVATE</button>
-<p id="promoMsg"></p>
+<div id="promo" class="screen">
+    <h2>Промокод</h2>
+    <input id="promoInput">
+    <button onclick="usePromo()">Ввести</button>
+    <div id="promoMsg"></div>
+    <button onclick="openScreen('menu')">Назад</button>
 </div>
 
 <!-- PROFILE -->
-<div id="profile" class="page">
-<h2>👤 Profile</h2>
+<div id="profile" class="screen">
+    <h2>Профіль</h2>
 
-<input id="nickname" placeholder="Name">
-<button onclick="saveProfile()">Save</button>
+    <input id="nameInput" placeholder="Нік">
+    <button onclick="saveName()">Зберегти</button><br>
 
-<h3>🎨 Avatar</h3>
-<button onclick="setAvatar('🔫')">🔫</button>
-<button onclick="setAvatar('📷')">📷</button>
-<button onclick="setAvatar('🎩')">🎩</button>
-<button onclick="setAvatar('🕶️')">🕶️</button>
+    <input type="color" id="colorPick">
+    <button onclick="setColor()">Колір</button><br>
 
-<h3>🎨 Color</h3>
-<button onclick="setColor('red')">Red</button>
-<button onclick="setColor('blue')">Blue</button>
-<button onclick="setColor('lime')">Green</button>
-<button onclick="setColor('white')">White</button>
+    <input type="file" onchange="changeAvatar(event)"><br>
 
-</div>
+    <button onclick="resetGame()">Скинути прогрес</button>
 
-<!-- NAV -->
-<div class="nav">
-<button onclick="show('click')">Click</button>
-<button onclick="show('shop')">Shop</button>
-<button onclick="show('cases')">Cases</button>
-<button onclick="show('wheel')">Wheel</button>
-<button onclick="show('inv')">Inv</button>
-<button onclick="show('promo')">Promo</button>
-<button onclick="show('profile')">Profile</button>
+    <h3>Статистика</h3>
+    <div id="stats"></div>
+
+    <button onclick="openScreen('menu')">Назад</button>
 </div>
 
 <script>
 
-/* DATA */
-let coins=0;
-let gold=0;
-let upgradeCost=100;
-let clickPower=1;
-let inventory=[];
-let usedCodes=[];
-
-let playerName="Player";
-let playerColor="white";
-let avatar="🔫";
-
-/* CASES */
-const cases={
-Marshmall:["AK Marsh","Glock Candy","Knife Pink"],
-Sand:["AK Sand","AWP Desert","M4 Dust"],
-Jlister:["AK Toxic","AWP Virus","Deagle Acid"],
-Reapel:["AK Reaper","Knife Death","AWP Ghost"],
-Pro:["AK Pro","M4 Elite","AWP Star"]
+let data = JSON.parse(localStorage.getItem("bs_clicker")) || {
+    gold:0,
+    silver:0,
+    click:1,
+    upgrade:100,
+    inv:[],
+    usedPromo:[],
+    stats:{
+        earnedGold:0,
+        spentGold:0,
+        earnedSilver:0,
+        spentSilver:0,
+        clicks:0,
+        time:0
+    },
+    name:"Гравець",
+    color:"#fff"
 };
 
-/* LOADING FIX */
-window.onload=()=>{
-setTimeout(()=>{
-document.getElementById("loading").style.display="none";
-update();
-},1200);
-};
+setInterval(()=>{data.stats.time++;save()},1000);
 
-/* NAV */
-function show(p){
-document.querySelectorAll(".page").forEach(e=>e.classList.remove("active"));
-document.getElementById(p).classList.add("active");
-}
-
-/* CLICK */
-function clickGun(){
-coins++;
-gold+=clickPower;
-update();
-}
-
-/* UPGRADE */
-function upgrade(){
-if(gold>=upgradeCost){
-gold-=upgradeCost;
-clickPower=2;
-upgradeCost+=100;
-update();
-}
-}
-
-/* SHOP */
-function buy(item,price){
-if(coins>=price){
-coins-=price;
-inventory.push(item);
-update();
-}
-}
-
-/* CASES */
-function openCase(type,price){
-if(gold<price)return;
-gold-=price;
-
-let item = cases[type][Math.floor(Math.random()*cases[type].length)];
-inventory.push(item);
-
-alert("🎁 " + item);
-update();
-}
-
-/* STICKER */
-function openSticker(){
-if(coins<500)return;
-coins-=500;
-inventory.push("Sticker Pack");
-update();
-}
-
-/* WHEEL */
-function spinWheel(){
-if(gold<50000){
-wheelResult.innerText="Need 50K";
-return;
-}
-
-gold-=50000;
-
-let r=Math.random()*100;
-
-if(r<1){
-inventory.push("Bayonet BS");
-wheelResult.innerText="SECRET DROP!";
-}
-else if(r<5){
-gold+=200000;
-wheelResult.innerText="200K GOLD";
-}
-else if(r<10){
-inventory.push("AK Legend");
-wheelResult.innerText="AK LEGEND";
-}
-else if(r<30){
-gold+=600;
-wheelResult.innerText="600 GOLD";
-}
-else{
-gold+=100;
-wheelResult.innerText="100 GOLD";
-}
-
-update();
-}
-
-/* PROMO */
-function useCode(){
-let v=document.getElementById("codeInput").value;
-
-if(usedCodes.includes(v)){
-promoMsg.innerText="Already used";
-return;
-}
-
-if(v==="Galactic"){
-inventory.push("Karambit Galactic");
-usedCodes.push(v);
-promoMsg.innerText="GALACTIC!";
-update();
-return;
-}
-
-gold+=100;
-usedCodes.push(v);
-promoMsg.innerText="+100 GOLD";
-update();
-}
-
-/* PROFILE */
-function saveProfile(){
-playerName=document.getElementById("nickname").value||playerName;
-update();
-}
-
-function setAvatar(a){
-avatar=a;
-update();
-}
-
-function setColor(c){
-playerColor=c;
-update();
-}
-
-/* INVENTORY */
-function renderInv(){
-let html="";
-inventory.forEach((i,x)=>{
-html+=`
-<div class="card">
-${i}
-<button onclick="sell(${x})">Sell</button>
-</div>`;
-});
-document.getElementById("inventory").innerHTML=html;
-}
-
-/* SELL */
-function sell(i){
-inventory.splice(i,1);
-gold+=100;
-update();
-}
-
-/* UPDATE */
-function update(){
-
-coinsEl.innerText=coins;
-goldEl.innerText=gold;
-
-nameEl.innerText=playerName;
-nameEl.style.color=playerColor;
-avatarEl.innerText=avatar;
-
-renderInv();
-save();
-}
-
-/* SAVE */
 function save(){
-localStorage.setItem("save",JSON.stringify({
-coins,gold,upgradeCost,clickPower,
-inventory,usedCodes,
-playerName,playerColor,avatar
-}));
+    localStorage.setItem("bs_clicker",JSON.stringify(data));
 }
 
-/* LOAD */
-try{
-let d=JSON.parse(localStorage.getItem("save"));
-if(d){
-coins=d.coins||0;
-gold=d.gold||0;
-upgradeCost=d.upgradeCost||100;
-clickPower=d.clickPower||1;
-inventory=d.inventory||[];
-usedCodes=d.usedCodes||[];
-playerName=d.playerName||"Player";
-playerColor=d.playerColor||"white";
-avatar=d.avatar||"🔫";
+function update(){
+    gold.innerText=data.gold;
+    silver.innerText=data.silver;
+    upgradePrice.innerText="Ціна: "+data.upgrade;
+    nick.innerText=data.name;
+    nick.style.color=data.color;
+    renderInv();
+    renderShop();
+    renderStats();
 }
-}catch{}
 
-/* ELEMENTS */
-const coinsEl=document.getElementById("coins");
-const goldEl=document.getElementById("gold");
-const nameEl=document.getElementById("name");
-const avatarEl=document.getElementById("avatar");
+function clickGold(){
+    data.gold+=data.click;
+    data.silver+=data.click;
+    data.stats.clicks++;
+    data.stats.earnedGold+=data.click;
+    data.stats.earnedSilver+=data.click;
+    update();save();
+}
 
-const promoMsg=document.getElementById("promoMsg");
-const wheelResult=document.getElementById("wheelResult");
+function buyUpgrade(){
+    if(data.gold>=data.upgrade){
+        data.gold-=data.upgrade;
+        data.click++;
+        data.upgrade+=100;
+        data.stats.spentGold+=data.upgrade;
+    }
+    update();save();
+}
+
+function openScreen(id){
+    document.querySelectorAll(".screen").forEach(e=>e.classList.remove("active"));
+    document.getElementById(id).classList.add("active");
+}
+
+let weapons=[
+"AK-47","M4","P90","AWP","Deagle","UMP","MP5","Famas","Glock","Knife",
+"Karambit","Shotgun","Sniper","USP","Vector","Aug","SG","CZ","R8","MAC10"
+];
+
+function renderShop(){
+    shopItems.innerHTML="";
+    weapons.forEach(w=>{
+        let div=document.createElement("div");
+        div.className="item";
+        div.innerHTML=`${w} - 200G <button onclick="buyWeapon('${w}')">Купити</button>`;
+        shopItems.appendChild(div);
+    });
+}
+
+function buyWeapon(w){
+    if(data.gold>=200){
+        data.gold-=200;
+        data.inv.push({name:w,price:200,rare:"common"});
+        data.stats.spentGold+=200;
+    }
+    update();save();
+}
+
+function renderInv(){
+    inv.innerHTML="";
+    data.inv.forEach((item,i)=>{
+        let div=document.createElement("div");
+        div.className="item";
+        div.innerHTML=`${item.name} (${item.rare}) 
+        <button onclick="sell(${i})">Продати</button>`;
+        inv.appendChild(div);
+    });
+}
+
+function sell(i){
+    let item=data.inv[i];
+    if(item.secret)return;
+    data.gold+=item.price;
+    data.inv.splice(i,1);
+    update();save();
+}
+
+function openCase(name,price){
+    if(data.gold<price)return;
+    data.gold-=price;
+
+    let rares=["common","rare","epic","legendary"];
+    let r=rares[Math.floor(Math.random()*rares.length)];
+
+    let item={
+        name:name+" Skin",
+        rare:r,
+        price:Math.floor(Math.random()*500)+100
+    };
+
+    data.inv.push(item);
+    update();save();
+}
+
+function openCaseSilver(){
+    if(data.silver<600)return;
+    data.silver-=600;
+
+    data.inv.push({
+        name:"Sticker 😊",
+        rare:"rare",
+        price:300
+    });
+
+    update();save();
+}
+
+function usePromo(){
+    let p=promoInput.value;
+
+    if(data.usedPromo.includes(p))return;
+
+    let goldPromo=["Pro","PositIv4IkBS","ZCY11K","Block Strike","Update","Holiday","2025","2026","2027"];
+    let silverPromo=["XX25","Top","BS","GG","Serebro"];
+
+    if(goldPromo.includes(p)){
+        data.gold+=100;
+    }
+    else if(silverPromo.includes(p)){
+        data.silver+=500;
+    }
+    else if(p==="SekretXX56"){
+        data.inv.push({name:"Karambit Gold",rare:"mythic",price:0,secret:true});
+    }
+    else if(p==="TopBHGF65"){
+        data.inv.push({name:"P90 Marsh",rare:"pro",price:0,secret:true});
+    }
+
+    data.usedPromo.push(p);
+    update();save();
+}
+
+function saveName(){
+    data.name=nameInput.value;
+    update();save();
+}
+
+function setColor(){
+    data.color=colorPick.value;
+    update();save();
+}
+
+function changeAvatar(e){
+    let file=e.target.files[0];
+    let reader=new FileReader();
+    reader.onload=()=>{
+        document.querySelector("img").src=reader.result;
+    };
+    reader.readAsDataURL(file);
+}
+
+function renderStats(){
+    stats.innerHTML=`
+    Золото зароблено: ${data.stats.earnedGold}<br>
+    Золото витрачено: ${data.stats.spentGold}<br>
+    Срібло зароблено: ${data.stats.earnedSilver}<br>
+    Срібло витрачено: ${data.stats.spentSilver}<br>
+    Кліків: ${data.stats.clicks}<br>
+    Скінів: ${data.inv.length}<br>
+    Час: ${data.stats.time} сек
+    `;
+}
+
+function resetGame(){
+    localStorage.clear();
+    location.reload();
+}
+
+update();
 
 </script>
 
 </body>
-  </html>
+                                                 </html>
